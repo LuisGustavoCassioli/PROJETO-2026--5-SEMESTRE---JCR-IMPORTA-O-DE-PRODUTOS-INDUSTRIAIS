@@ -1,0 +1,112 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+.navbar.scrolled {
+  box-shadow: var(--shadow);
+}
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  height: 70px;
+}
+
+/* ── Logo ── */
+.logo { display: flex; align-items: center; }
+
+.navbar-logo-img {
+  height: 52px;
+  width: auto;
+  display: block;
+}
+
+
+.logo-emblem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+.logo-jcr {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.logo-jcr span { color: var(--red); }
+.logo-tagline {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* ── Nav ── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: auto;
+}
+.nav-link {
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-mid);
+  transition: var(--transition);
+}
+.nav-link:hover { color: var(--navy); background: var(--bg); }
+.nav-link.active {
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* ── CTA ── */
+.navbar-cta {
+  flex-shrink: 0;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.82rem;
+}
+
+/* ── Mobile ── */
+.menu-toggle {
+  display: none;
+  background: none;
+  color: var(--navy);
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-left: auto;
+}
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.mobile-menu.open { max-height: 400px; }
+.mobile-link {
+  padding: 0.9rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-mid);
+  border-bottom: 1px solid var(--mid);
+}
+.mobile-link.active { color: var(--red); }
+
+@media (max-width: 768px) {
+  .nav-links,.navbar-cta { display: none; }
+  .menu-toggle { display: flex; }
+}

@@ -1,0 +1,30 @@
+.topbar {
+  background: var(--navy-dark);
+  padding: 0.45rem 0;
+  font-size: 0.8rem;
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.topbar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255,255,255,0.72);
+  transition: color 0.2s;
+}
+.topbar-item:hover { color: #fff; }
+
+.topbar-whatsapp {
+  margin-left: auto;
+  color: #86efac;
+  font-weight: 600;
+}
+.topbar-whatsapp:hover { color: #4ade80; }
+
+@media (max-width: 640px) { .topbar-whatsapp { margin-left: 0; } }
