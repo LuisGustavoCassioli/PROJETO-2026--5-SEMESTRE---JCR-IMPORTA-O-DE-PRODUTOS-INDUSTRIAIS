@@ -1,58 +1,69 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ⚙️ JCR Produtos Industriais: Modernização e Migração para Nuvem
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Projeto de Extensão - 5º Semestre ADS (UNINOVE)
 
-## About Laravel
+## 🚀 Visão Geral
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este projeto documenta e executa a modernização da plataforma digital da **JCR Importação de Produtos Industriais**. O sistema original, baseado em páginas estáticas de baixo desempenho, foi refatorado para uma arquitetura Cloud escalável, focando em performance (Lighthouse > 85), SEO e facilidade de gestão de catálogo.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 👥 Squad JCR (Grupo 6)
 
-## Learning Laravel
+* **Luis Gustavo Cassioli Rodrigues**
+* **Eduardo de Castro Freitas**
+* **Samuel de Lucas Silva**
+* **Paulo Nlandu Onde Mavuba**
+* **Carlos Henrique Gomes Santos**
+* **Lucas Nunes**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🏗️ Arquitetura e Stack Tecnológica
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+A solução foi construída utilizando tecnologias de ponta para garantir um ambiente robusto e de fácil manutenção:
 
-## Agentic Development
+* **Frontend**: [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/) (Tipagem forte e HMR ultra-rápido) [cite: 2026-03-11]
+* **Backend (BaaS)**: [Supabase](https://supabase.com/) (PostgreSQL, Row Level Security e Realtime) [cite: 2026-03-04, 2026-03-11]
+* **Infraestrutura**: [Vercel](https://vercel.com/) (Hospedagem Cloud com CI/CD via GitHub)
+* **Engenharia Reversa**: [HTTrack](https://www.httrack.com/) para extração do sistema legado
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## 📊 Metas de Engenharia
+
+Conforme definido na documentação ABNT:
+
+1. **Performance**: Tempo de carregamento inferior a 2,5 segundos.
+2. **SEO**: Estrutura semântica para indexação de produtos industriais.
+3. **Gestão**: Implementação de área administrativa protegida para CRUD de produtos.
+
+---
+
+## 🔗 Links do Projeto
+
+* **Site do Cliente (Legado):** [jcrprodutosindustriais.com.br](https://www.jcrprodutosindustriais.com.br/)
+* **Produção (Vercel):** *[Inserir Link após Deploy]*
+* **Apresentação:** *[Inserir Link do Vídeo]*
+
+---
+
+## 📁 Estrutura de Pastas
+
+* `/src`: Código-fonte da aplicação React/TS.
+* `/public`: Assets estáticos e imagens otimizadas.
+* `/legacy`: Arquivos originais mapeados para engenharia reversa.
+
+---
+
+## 🚀 Como rodar o projeto localmente
 
 ```bash
-composer require laravel/boost --dev
+# Instalar dependências
+npm install
 
-php artisan boost:install
-```
+# Rodar em modo desenvolvimento
+npm run dev
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Gerar build de produção
+npm run build
