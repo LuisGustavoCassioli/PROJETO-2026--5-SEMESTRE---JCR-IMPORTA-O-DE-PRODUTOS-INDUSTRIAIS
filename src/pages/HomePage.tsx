@@ -136,11 +136,6 @@ export default function HomePage() {
                         <div className="hero-img-main">
                             <img src="/hero_industrial.png" alt="Industrial instrumentation gauges" />
                         </div>
-                        {/* JCR badge */}
-                        <div className="hero-badge-overlay">
-                            <div className="hero-badge-jcr">J<span>.</span>C<span>.</span>R</div>
-                            <div className="hero-badge-sub">IMPORTAÇÃO</div>
-                        </div>
                     </div>
                 </div>
             </section>

@@ -109,18 +109,12 @@
   position: relative;
   background: var(--navy);
   overflow: hidden;
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+  margin-left: -5%; /* Overlap slightly with left panel */
 }
 
 .hero-diagonal {
-  position: absolute;
-  left: -40px;
-  top: 0;
-  width: 80px;
-  height: 100%;
-  background: var(--white);
-  transform: skewX(-5deg);
-  z-index: 2;
-  transform-origin: bottom left;
+  display: none; /* Removed in favor of container clip-path */
 }
 
 .hero-image-collage {
@@ -133,38 +127,14 @@
   width: 100%;
   height: 100%;
 }
-.hero-img-main svg { width: 100%; height: 100%; object-fit: cover; }
-
-.hero-badge-overlay {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  text-align: center;
-  z-index: 3;
+.hero-img-main img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover;
+  filter: brightness(0.85) contrast(1.1);
 }
 
-.hero-badge-jcr {
-  font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: #fff;
-  letter-spacing: -0.02em;
-}
-.hero-badge-jcr span { color: var(--red-light); }
 
-.hero-badge-sub {
-  font-size: 0.52rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: rgba(255,255,255,0.5);
-  margin-top: 2px;
-}
 
 /* ── Product Tiles ── */
 .products-carousel {
