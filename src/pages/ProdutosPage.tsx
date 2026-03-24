@@ -1,11 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { ChevronRight, SlidersHorizontal, Loader2, PackageSearch } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import './ProdutosPage.css';
+
+interface Product {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    tags: string[];
+}
 
 type Category = 'Todos' | 'Pressão' | 'Vácuo' | 'Temperatura' | 'Acessórios';
 
 const categories: Category[] = ['Todos', 'Pressão', 'Vácuo', 'Temperatura', 'Acessórios'];
+
 
 /* SVG instrument illustrations */
 const ManometerSVG = ({ size = 24 }: { size?: number }) => (
@@ -77,74 +87,26 @@ const categoryIcons: Record<Category, React.ComponentType<{ size?: number }>> = 
 };
 
 
-const products = [
-    {
-        id: 1,
-        name: 'Manômetro Industrial',
-        category: 'Pressão' as Category,
-        desc: 'Manômetro de alta precisão para medição de pressão em ambientes industriais agressivos. Caixas em aço inox, bronze ou plástico.',
-        tags: ['Medição', 'Pressão', 'Aço Inox'],
-    },
-    {
-        id: 2,
-        name: 'Manômetro de Glicerina',
-        category: 'Pressão' as Category,
-        desc: 'Manômetro preenchido com glicerina para redução de oscilações em sistemas de alta vibração e pulsação.',
-        tags: ['Alta Vibração', 'Glicerina', 'Precisão'],
-    },
-    {
-        id: 3,
-        name: 'Vacuômetro',
-        category: 'Vácuo' as Category,
-        desc: 'Equipamento para medição de pressão negativa (vácuo). Ideal para sistemas de bombeamento e processos a vácuo.',
-        tags: ['Vácuo', 'Bombeamento'],
-    },
-    {
-        id: 4,
-        name: 'Manovacuômetro',
-        category: 'Vácuo' as Category,
-        desc: 'Combina medição de pressão positiva e negativa em um único instrumento. Solução versátil e econômica.',
-        tags: ['Versátil', 'Pressão e Vácuo'],
-    },
-    {
-        id: 5,
-        name: 'Termômetro Bimetálico',
-        category: 'Temperatura' as Category,
-        desc: 'Termômetros bimetálicos com hastes de diversas medidas e conexões, para processos industriais e comerciais.',
-        tags: ['Temperatura', 'Bimetálico'],
-    },
-    {
-        id: 6,
-        name: 'Termômetro de Vidro',
-        category: 'Temperatura' as Category,
-        desc: 'Termômetros de imersão com proteção metálica, para aplicações em laboratórios e processos industriais gerais.',
-        tags: ['Laboratório', 'Imersão'],
-    },
-    {
-        id: 7,
-        name: 'Sifão Tipo U',
-        category: 'Acessórios' as Category,
-        desc: 'Sifão tipo U para proteção de manômetros contra vapor. Evita danos ao instrumento por temperaturas elevadas.',
-        tags: ['Proteção', 'Vapor', 'Sifão'],
-    },
-    {
-        id: 8,
-        name: 'Snubber / Amortecedor',
-        category: 'Acessórios' as Category,
-        desc: 'Amortecedor de pressão para proteger instrumentos contra choques e pulsações em sistemas hidráulicos e pneumáticos.',
-        tags: ['Proteção', 'Hidráulico', 'Pneumático'],
-    },
-    {
-        id: 9,
-        name: 'Válvula de Bloqueio',
-        category: 'Acessórios' as Category,
-        desc: 'Válvula de bloqueio para isolar o instrumento do processo, permitindo manutenção sem interrupção da linha.',
-        tags: ['Válvula', 'Manutenção'],
-    },
-];
-
 export default function ProdutosPage() {
     const [active, setActive] = useState<Category>('Todos');
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('products')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (!error && data) {
+                setProducts(data);
+            }
+            setLoading(false);
+        };
+        fetchProducts();
+    }, []);
 
     const filtered = active === 'Todos' ? products : products.filter(p => p.category === active);
 
@@ -206,37 +168,57 @@ export default function ProdutosPage() {
                     {/* Product Grid */}
                     <div className="products-results">
                         <div className="results-header">
-                            <p>{filtered.length} produto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</p>
+                            <p>
+                                {loading ? 'Carregando...' : `${filtered.length} produto${filtered.length !== 1 ? 's' : ''} encontrado${filtered.length !== 1 ? 's' : ''}`}
+                            </p>
                         </div>
-                        <div className="product-grid">
-                            {filtered.map(product => (
-                                <div key={product.id} className="card product-result-card">
-                                    <div className="product-result-icon">
-                                        {(() => { const Icon = categoryIcons[product.category]; return <Icon size={24} />; })()}
+
+                        {loading ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5rem 0', color: 'var(--text-muted)' }}>
+                                <Loader2 className="animate-spin" size={40} style={{ color: 'var(--navy)', marginBottom: '1rem' }} />
+                                <p>Carregando nosso catálogo...</p>
+                            </div>
+                        ) : filtered.length === 0 ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5rem 0', color: 'var(--text-muted)', textAlign: 'center' }}>
+                                <PackageSearch size={64} strokeWidth={1} style={{ marginBottom: '1.5rem', opacity: 0.5 }} />
+                                <h3>Nenhum produto encontrado</h3>
+                                <p>Tente selecionar outra categoria ou entre em contato para pedidos especiais.</p>
+                            </div>
+                        ) : (
+                            <div className="product-grid">
+                                {filtered.map(product => (
+                                    <div key={product.id} className="card product-result-card">
+                                        <div className="product-result-icon">
+                                            {(() => {
+                                                const Icon = categoryIcons[product.category as Category] || categoryIcons['Todos'];
+                                                return <Icon size={24} />;
+                                            })()}
+                                        </div>
+                                        <div className="product-result-cat">{product.category}</div>
+                                        <h3>{product.name}</h3>
+                                        <p>{product.description}</p>
+                                        <div className="product-tags">
+                                            {product.tags?.map(tag => (
+                                                <span key={tag} className="product-tag">{tag}</span>
+                                            ))}
+                                        </div>
+                                        <a
+                                            href="https://api.whatsapp.com/send?phone=5511987599931"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="btn btn-primary"
+                                            style={{ fontSize: '0.82rem', padding: '0.6rem 1.1rem', marginTop: '1rem' }}
+                                        >
+                                            Solicitar Cotação
+                                        </a>
                                     </div>
-                                    <div className="product-result-cat">{product.category}</div>
-                                    <h3>{product.name}</h3>
-                                    <p>{product.desc}</p>
-                                    <div className="product-tags">
-                                        {product.tags.map(tag => (
-                                            <span key={tag} className="product-tag">{tag}</span>
-                                        ))}
-                                    </div>
-                                    <a
-                                        href="https://api.whatsapp.com/send?phone=5511987599931"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="btn btn-primary"
-                                        style={{ fontSize: '0.82rem', padding: '0.6rem 1.1rem', marginTop: '1rem' }}
-                                    >
-                                        Solicitar Cotação
-                                    </a>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
         </>
     );
 }
+
