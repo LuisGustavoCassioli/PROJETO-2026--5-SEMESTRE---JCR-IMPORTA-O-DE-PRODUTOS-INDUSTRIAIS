@@ -1,0 +1,19 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    # Roda toda segunda e quinta às 00:00 UTC (formato cron)
+    # Isso garante atividade pelo menos a cada 3-4 dias
+    - cron: '0 0 * * 1,4'
+  workflow_dispatch: # Permite rodar manualmente para testar
+
+jobs:
+  ping:
+    name: Ping Supabase API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send request to Supabase
+        run: |
+          curl -I -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+          -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
