@@ -10,6 +10,7 @@ interface Product {
     description: string;
     category: string;
     tags: string[];
+    image_url?: string;
 }
 
 type Category = 'Todos' | 'Pressão' | 'Vácuo' | 'Temperatura' | 'Acessórios';
@@ -189,10 +190,14 @@ export default function ProdutosPage() {
                                 {filtered.map(product => (
                                     <div key={product.id} className="card product-result-card">
                                         <div className="product-result-icon">
-                                            {(() => {
-                                                const Icon = categoryIcons[product.category as Category] || categoryIcons['Todos'];
-                                                return <Icon size={24} />;
-                                            })()}
+                                            {product.image_url ? (
+                                                <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            ) : (
+                                                (() => {
+                                                    const Icon = categoryIcons[product.category as Category] || categoryIcons['Todos'];
+                                                    return <Icon size={24} />;
+                                                })()
+                                            )}
                                         </div>
                                         <div className="product-result-cat">{product.category}</div>
                                         <h3>{product.name}</h3>

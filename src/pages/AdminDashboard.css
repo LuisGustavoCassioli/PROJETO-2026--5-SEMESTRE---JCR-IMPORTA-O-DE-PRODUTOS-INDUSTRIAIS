@@ -23,7 +23,16 @@
     box-shadow: 0 0 0 3px rgba(13, 34, 64, 0.1);
 }
 
-/* Animations for loader */
+/* Image Upload */
+.image-upload-container {
+    transition: var(--transition);
+}
+
+.image-upload-container:hover {
+    border-color: var(--navy) !important;
+    background: rgba(13, 34, 64, 0.02);
+}
+
 .animate-spin {
     animation: spin 1s linear infinite;
 }

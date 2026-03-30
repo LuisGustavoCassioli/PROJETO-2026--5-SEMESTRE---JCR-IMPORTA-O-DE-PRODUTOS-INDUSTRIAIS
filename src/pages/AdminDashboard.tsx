@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import {
     Plus, Search, Edit2, Trash2, Package, LogOut,
-    X, Loader2
-} from 'lucide-react';
+    X, Loader2, UploadCloud, Image as ImageIcon
+} from "lucide-react";
 import './AdminDashboard.css';
 
 interface Product {
@@ -12,6 +12,7 @@ interface Product {
     description: string;
     category: string;
     tags: string[];
+    image_url: string;
     created_at: string;
 }
 
@@ -27,6 +28,9 @@ export default function AdminDashboard() {
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('Pressão');
     const [tags, setTags] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         fetchProducts();
@@ -49,46 +53,84 @@ export default function AdminDashboard() {
     };
 
     const openModal = (product?: Product) => {
-        if (product) {
-            setEditingProduct(product);
-            setName(product.name);
-            setDescription(product.description);
-            setCategory(product.category);
-            setTags(product.tags.join(', '));
-        } else {
-            setEditingProduct(null);
-            setName('');
-            setDescription('');
-            setCategory('Pressão');
-            setTags('');
-        }
+        setEditingProduct(product || null);
         setIsModalOpen(true);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const uploadImage = async (file: File): Promise<string> => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+        const filePath = `product-images/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+            .from('products')
+            .upload(filePath, file);
+
+        if (uploadError) {
+            throw uploadError;
+        }
+
+        const { data } = supabase.storage
+            .from('products')
+            .getPublicUrl(filePath);
+
+        return data.publicUrl;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const tagArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+        setUploading(true);
 
-        const payload = {
-            name,
-            description,
-            category,
-            tags: tagArray
-        };
+        try {
+            let finalImageUrl = imagePreview || '';
 
-        if (editingProduct) {
-            const { error } = await supabase
-                .from('products')
-                .update(payload)
-                .eq('id', editingProduct.id);
-            if (!error) setIsModalOpen(false);
-        } else {
-            const { error } = await supabase
-                .from('products')
-                .insert([payload]);
-            if (!error) setIsModalOpen(false);
+            // Upload new image if selected
+            if (imageFile) {
+                finalImageUrl = await uploadImage(imageFile);
+            }
+
+            const productData = {
+                name,
+                description,
+                category,
+                tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag !== ''),
+                image_url: finalImageUrl
+            };
+
+            if (editingProduct) {
+                const { error } = await supabase
+                    .from('products')
+                    .update(productData)
+                    .eq('id', editingProduct.id);
+                if (error) throw error;
+            } else {
+                const { error } = await supabase
+                    .from('products')
+                    .insert([productData]);
+                if (error) throw error;
+            }
+
+            setIsModalOpen(false);
+            setEditingProduct(null);
+            fetchProducts();
+        } catch (error) {
+            console.error('Erro ao salvar produto:', error);
+            alert('Falha ao salvar produto. Verifique as configurações de Storage no Supabase.');
+        } finally {
+            setUploading(false);
         }
-        fetchProducts();
     };
 
     const handleDelete = async (id: string) => {
@@ -166,8 +208,19 @@ export default function AdminDashboard() {
                                 ) : filteredProducts.map(p => (
                                     <tr key={p.id} style={{ borderBottom: '1px solid var(--border)' }}>
                                         <td style={{ padding: '1rem' }}>
-                                            <div style={{ fontWeight: 600, color: 'var(--navy)' }}>{p.name}</div>
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.description}</div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                <div style={{ width: '48px', height: '48px', borderRadius: '4px', background: '#eee', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                    {p.image_url ? (
+                                                        <img src={p.image_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    ) : (
+                                                        <ImageIcon size={20} style={{ color: 'var(--text-muted)' }} />
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <div style={{ fontWeight: 600, color: 'var(--navy)' }}>{p.name}</div>
+                                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.description}</div>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td style={{ padding: '1rem' }}>
                                             <span className="badge" style={{ margin: 0, textTransform: 'capitalize' }}>{p.category}</span>
@@ -221,13 +274,61 @@ export default function AdminDashboard() {
                             </div>
 
                             <div>
+                                <label className="form-label">Imagem do Produto</label>
+                                <div className="image-upload-container" style={{
+                                    border: '2px dashed var(--border)',
+                                    borderRadius: '8px',
+                                    padding: '1rem',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                    position: 'relative',
+                                    minHeight: '120px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    overflow: 'hidden'
+                                }}>
+                                    {imagePreview ? (
+                                        <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+                                            <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: 0.5 }} />
+                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <button type="button" className="btn btn-sm" onClick={() => { setImageFile(null); setImagePreview(null); }} style={{ background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none' }}>Alterar Imagem</button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <UploadCloud size={32} style={{ color: 'var(--primary)', marginBottom: '0.5rem' }} />
+                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Clique para selecionar uma foto</p>
+                                        </>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        style={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            opacity: 0,
+                                            cursor: 'pointer',
+                                            display: imagePreview ? 'none' : 'block'
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
                                 <label className="form-label">Descrição</label>
                                 <textarea className="form-input" rows={4} style={{ resize: 'none' }} value={description} onChange={e => setDescription(e.target.value)} />
                             </div>
 
                             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="btn" style={{ flex: 1, border: '1px solid var(--border)' }}>Cancelar</button>
-                                <button type="submit" className="btn btn-primary" style={{ flex: 2 }}>Salvar Produto</button>
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="btn" style={{ flex: 1, border: '1px solid var(--border)' }} disabled={uploading}>Cancelar</button>
+                                <button type="submit" className="btn btn-primary" style={{ flex: 2 }} disabled={uploading}>
+                                    {uploading ? (
+                                        <><Loader2 className="animate-spin" size={18} style={{ marginRight: '0.5rem' }} /> Salvando...</>
+                                    ) : 'Salvar Produto'}
+                                </button>
                             </div>
                         </form>
                     </div>
