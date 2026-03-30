@@ -13,6 +13,7 @@ interface Product {
     category: string;
     tags: string[];
     image_url: string;
+    images: string[];
     created_at: string;
 }
 
@@ -28,8 +29,9 @@ export default function AdminDashboard() {
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('Pressão');
     const [tags, setTags] = useState('');
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [existingImages, setExistingImages] = useState<string[]>([]);
+    const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -53,20 +55,48 @@ export default function AdminDashboard() {
     };
 
     const openModal = (product?: Product) => {
-        setEditingProduct(product || null);
+        if (product) {
+            setEditingProduct(product);
+            setName(product.name);
+            setDescription(product.description || '');
+            setCategory(product.category);
+            setTags(product.tags?.join(', ') || '');
+            setExistingImages(product.images || (product.image_url ? [product.image_url] : []));
+        } else {
+            setEditingProduct(null);
+            setName('');
+            setDescription('');
+            setCategory('Pressão');
+            setTags('');
+            setExistingImages([]);
+        }
+        setImageFiles([]);
+        setImagePreviews([]);
         setIsModalOpen(true);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+        const files = Array.from(e.target.files || []);
+        if (files.length > 0) {
+            setImageFiles(prev => [...prev, ...files]);
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImagePreviews(prev => [...prev, reader.result as string]);
+                };
+                reader.readAsDataURL(file);
+            });
         }
+    };
+
+    const removeNewImage = (index: number) => {
+        setImageFiles(prev => prev.filter((_, i) => i !== index));
+        setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const removeExistingImage = (index: number) => {
+        setExistingImages(prev => prev.filter((_, i) => i !== index));
     };
 
     const uploadImage = async (file: File): Promise<string> => {
@@ -94,19 +124,20 @@ export default function AdminDashboard() {
         setUploading(true);
 
         try {
-            let finalImageUrl = imagePreview || '';
+            // Upload all new images
+            const newImageUrls = await Promise.all(
+                imageFiles.map(file => uploadImage(file))
+            );
 
-            // Upload new image if selected
-            if (imageFile) {
-                finalImageUrl = await uploadImage(imageFile);
-            }
+            const allImages = [...existingImages, ...newImageUrls];
 
             const productData = {
                 name,
                 description,
                 category,
                 tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag !== ''),
-                image_url: finalImageUrl
+                image_url: allImages[0] || '', // First image as main
+                images: allImages
             };
 
             if (editingProduct) {
@@ -274,46 +305,41 @@ export default function AdminDashboard() {
                             </div>
 
                             <div>
-                                <label className="form-label">Imagem do Produto</label>
-                                <div className="image-upload-container" style={{
-                                    border: '2px dashed var(--border)',
-                                    borderRadius: '8px',
-                                    padding: '1rem',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    position: 'relative',
-                                    minHeight: '120px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    overflow: 'hidden'
-                                }}>
-                                    {imagePreview ? (
-                                        <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
-                                            <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: 0.5 }} />
-                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <button type="button" className="btn btn-sm" onClick={() => { setImageFile(null); setImagePreview(null); }} style={{ background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none' }}>Alterar Imagem</button>
-                                            </div>
+                                <label className="form-label">Galeria de Imagens (Selecione várias)</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
+                                    {/* Existing Images */}
+                                    {existingImages.map((src, idx) => (
+                                        <div key={`existing-${idx}`} style={{ position: 'relative', aspectRatio: '1', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                                            <img src={src} alt="Produto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            <button type="button" onClick={() => removeExistingImage(idx)} style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(255,0,0,0.7)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={12} /></button>
                                         </div>
-                                    ) : (
-                                        <>
-                                            <UploadCloud size={32} style={{ color: 'var(--primary)', marginBottom: '0.5rem' }} />
-                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Clique para selecionar uma foto</p>
-                                        </>
-                                    )}
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleFileChange}
-                                        style={{
-                                            position: 'absolute',
-                                            inset: 0,
-                                            opacity: 0,
-                                            cursor: 'pointer',
-                                            display: imagePreview ? 'none' : 'block'
-                                        }}
-                                    />
+                                    ))}
+
+                                    {/* New Image Previews */}
+                                    {imagePreviews.map((src, idx) => (
+                                        <div key={`new-${idx}`} style={{ position: 'relative', aspectRatio: '1', borderRadius: '6px', overflow: 'hidden', border: '2px solid var(--primary)', opacity: 0.8 }}>
+                                            <img src={src} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            <button type="button" onClick={() => removeNewImage(idx)} style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.7)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={12} /></button>
+                                        </div>
+                                    ))}
+
+                                    {/* Add Button */}
+                                    <label style={{
+                                        aspectRatio: '1',
+                                        border: '2px dashed var(--border)',
+                                        borderRadius: '6px',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        transition: 'var(--transition)',
+                                        color: 'var(--text-muted)'
+                                    }} className="image-upload-container">
+                                        <UploadCloud size={24} />
+                                        <span style={{ fontSize: '0.65rem', marginTop: '4px' }}>Adicionar</span>
+                                        <input type="file" multiple accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
+                                    </label>
                                 </div>
                             </div>
 

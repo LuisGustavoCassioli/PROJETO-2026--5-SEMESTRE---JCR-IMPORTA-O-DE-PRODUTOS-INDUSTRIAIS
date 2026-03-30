@@ -11,6 +11,7 @@ interface Product {
     category: string;
     tags: string[];
     image_url?: string;
+    images?: string[];
 }
 
 type Category = 'Todos' | 'Pressão' | 'Vácuo' | 'Temperatura' | 'Acessórios';
@@ -190,7 +191,14 @@ export default function ProdutosPage() {
                                 {filtered.map(product => (
                                     <div key={product.id} className="card product-result-card">
                                         <div className="product-result-icon">
-                                            {product.image_url ? (
+                                            {product.images && product.images.length > 0 ? (
+                                                <>
+                                                    <img src={product.images[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    {product.images.length > 1 && (
+                                                        <span style={{ position: 'absolute', bottom: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '10px' }}>+{product.images.length - 1} fotos</span>
+                                                    )}
+                                                </>
+                                            ) : product.image_url ? (
                                                 <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             ) : (
                                                 (() => {
