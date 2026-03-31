@@ -82,9 +82,10 @@ export default function AdminDashboard() {
 
     const handleInvite = async (e: React.FormEvent) => {
         e.preventDefault();
-        const { error } = await supabase.from('whitelist').insert([{ email: inviteEmail }]);
+        const mappedEmail = inviteEmail.includes('@') ? inviteEmail : `${inviteEmail.toLowerCase()}@jcr.com.br`;
+        const { error } = await supabase.from('whitelist').insert([{ email: mappedEmail }]);
         if (error) {
-            alert('Este e-mail já está convidado ou erro na permissão.');
+            alert('Este usuário já está autorizado ou erro na permissão.');
         } else {
             setInviteEmail('');
             fetchWhitelist();
@@ -99,6 +100,10 @@ export default function AdminDashboard() {
     const handleLogout = async () => {
         await supabase.auth.signOut();
         window.location.href = '/login';
+    };
+
+    const formatUser = (email: string) => {
+        return email.endsWith('@jcr.com.br') ? email.split('@')[0] : email;
     };
 
     const openModal = (product?: Product) => {
@@ -263,7 +268,7 @@ export default function AdminDashboard() {
                                 border: activeTab === 'users' ? 'none' : '1px solid var(--border)'
                             }}
                         >
-                            <Users size={18} /> Usuários Authorized
+                            <Users size={18} /> Gestão de Acessos
                         </button>
                     </div>
 
@@ -291,29 +296,29 @@ export default function AdminDashboard() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem' }}>
                             {/* Invite and Whitelist */}
                             <div className="card" style={{ padding: '2rem' }}>
-                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Mail size={20} /> Convidar Administradores</h3>
+                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Mail size={20} /> Autorizar Acesso Industrial</h3>
                                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                                    Adicione o e-mail dos patrões ou pessoal autorizado abaixo. Isso permitirá que eles façam o cadastro no sistema.
+                                    Adicione o <strong>Usuário / Código</strong> dos patrões (ex: nome+JCR). Isso permitirá que eles acessem o sistema sem precisar de e-mail real.
                                 </p>
                                 <form onSubmit={handleInvite} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
                                     <input
-                                        type="email"
+                                        type="text"
                                         className="form-input"
                                         required
-                                        placeholder="email@exemplo.com"
+                                        placeholder="usuário+JCR"
                                         value={inviteEmail}
                                         onChange={e => setInviteEmail(e.target.value)}
                                     />
-                                    <button type="submit" className="btn btn-primary">Autorizar E-mail</button>
+                                    <button type="submit" className="btn btn-primary">Autorizar</button>
                                 </form>
 
-                                <h4 style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>E-mails Autorizados (Aguardando cadastro)</h4>
+                                <h4 style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Acesso Autorizado (Aguardando primeiro acesso)</h4>
                                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                                     {whitelist.length === 0 ? (
-                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Nenhum convite pendente.</p>
+                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Nenhuma autorização pendente.</p>
                                     ) : whitelist.map(entry => (
                                         <div key={entry.email} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', borderBottom: '1px solid var(--border)' }}>
-                                            <span style={{ fontSize: '0.9rem' }}>{entry.email}</span>
+                                            <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{formatUser(entry.email)}</span>
                                             <button onClick={() => removeWhitelist(entry.email)} className="btn" style={{ color: 'var(--red)', padding: '0.2rem' }} title="Remover autorização"><Trash2 size={14} /></button>
                                         </div>
                                     ))}
@@ -322,11 +327,11 @@ export default function AdminDashboard() {
 
                             {/* Active Profiles */}
                             <div className="card" style={{ padding: '2rem' }}>
-                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Users size={20} /> Ativos</h3>
+                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Users size={20} /> Já Cadastrados</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                     {profiles.map(profile => (
                                         <div key={profile.id} style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '8px' }}>
-                                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{profile.email}</div>
+                                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{formatUser(profile.email)}</div>
                                             <div style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: 'bold', textTransform: 'uppercase', marginTop: '2px' }}>{profile.role}</div>
                                         </div>
                                     ))}

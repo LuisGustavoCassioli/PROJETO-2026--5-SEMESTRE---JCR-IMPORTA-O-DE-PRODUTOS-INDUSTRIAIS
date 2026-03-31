@@ -25,10 +25,12 @@ export default function LoginPage() {
         setLoading(true);
         setError(null);
 
+        const mappedEmail = email.includes('@') ? email : `${email.toLowerCase()}@jcr.com.br`;
+
         if (authMode === 'login') {
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            const { error } = await supabase.auth.signInWithPassword({ email: mappedEmail, password });
             if (error) {
-                setError('Credenciais inválidas.');
+                setError('Acesso negado. Verifique o usuário e senha.');
                 setLoading(false);
             } else {
                 navigate('/gestao-operacional');
@@ -38,18 +40,18 @@ export default function LoginPage() {
             const { data: whitelistEntry, error: wlError } = await supabase
                 .from('whitelist')
                 .select('*')
-                .eq('email', email.toLowerCase())
+                .eq('email', mappedEmail)
                 .single();
 
             if (wlError || !whitelistEntry) {
-                setError('Este e-mail não foi autorizado por um administrador.');
+                setError('Este usuário não está autorizado no sistema.');
                 setLoading(false);
                 return;
             }
 
             // REGISTER
             const { error: signUpError } = await supabase.auth.signUp({
-                email,
+                email: mappedEmail,
                 password,
                 options: {
                     data: { role: 'admin' }
@@ -133,13 +135,13 @@ export default function LoginPage() {
                         )}
 
                         <div>
-                            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 600 }}>E-mail</label>
+                            <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 600 }}>Usuário / Código</label>
                             <div style={{ position: 'relative' }}>
                                 <Mail size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                                 <input
-                                    type="email"
+                                    type="text"
                                     className="form-input"
-                                    placeholder="seu@email.com"
+                                    placeholder="nome+JCR"
                                     style={{ paddingLeft: '40px' }}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
