@@ -37,14 +37,11 @@ export default function LoginPage() {
                 navigate('/gestao-operacional');
             }
         } else {
-            // WHITE LIST CHECK
-            const { data: whitelistEntry, error: wlError } = await supabase
-                .from('whitelist')
-                .select('*')
-                .eq('email', mappedEmail)
-                .single();
+            // WHITE LIST CHECK VIA RPC (Secure)
+            const { data: isAuthorized, error: rpcError } = await supabase
+                .rpc('check_user_whitelist', { email_to_check: mappedEmail });
 
-            if (wlError || !whitelistEntry) {
+            if (rpcError || !isAuthorized) {
                 setError('Este usuário não está autorizado no sistema.');
                 setLoading(false);
                 return;
