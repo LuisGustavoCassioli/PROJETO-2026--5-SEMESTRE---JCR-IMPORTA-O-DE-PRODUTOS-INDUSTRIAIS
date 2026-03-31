@@ -82,7 +82,8 @@ export default function AdminDashboard() {
 
     const handleInvite = async (e: React.FormEvent) => {
         e.preventDefault();
-        const mappedEmail = inviteEmail.includes('@') ? inviteEmail : `${inviteEmail.toLowerCase()}@jcr.com.br`;
+        const cleanInput = inviteEmail.trim().toLowerCase();
+        const mappedEmail = cleanInput.includes('@') ? cleanInput : `${cleanInput}@jcr.com.br`;
         const { error } = await supabase.from('whitelist').insert([{ email: mappedEmail }]);
         if (error) {
             alert('Este usuário já está autorizado ou erro na permissão.');

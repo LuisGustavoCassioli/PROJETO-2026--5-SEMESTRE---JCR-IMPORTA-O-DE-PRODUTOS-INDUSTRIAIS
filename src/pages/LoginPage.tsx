@@ -25,7 +25,8 @@ export default function LoginPage() {
         setLoading(true);
         setError(null);
 
-        const mappedEmail = email.includes('@') ? email : `${email.toLowerCase()}@jcr.com.br`;
+        const cleanInput = email.trim().toLowerCase();
+        const mappedEmail = cleanInput.includes('@') ? cleanInput : `${cleanInput}@jcr.com.br`;
 
         if (authMode === 'login') {
             const { error } = await supabase.auth.signInWithPassword({ email: mappedEmail, password });
