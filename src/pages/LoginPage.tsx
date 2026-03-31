@@ -13,27 +13,57 @@ export default function LoginPage() {
         return () => { document.head.removeChild(meta); };
     }, []);
 
+    const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        if (error) {
-            setError('Credenciais inválidas ou erro no servidor.');
-            setLoading(false);
+        if (authMode === 'login') {
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                setError('Credenciais inválidas.');
+                setLoading(false);
+            } else {
+                navigate('/gestao-operacional');
+            }
         } else {
-            navigate('/gestao-operacional');
+            // WHITE LIST CHECK
+            const { data: whitelistEntry, error: wlError } = await supabase
+                .from('whitelist')
+                .select('*')
+                .eq('email', email.toLowerCase())
+                .single();
+
+            if (wlError || !whitelistEntry) {
+                setError('Este e-mail não foi autorizado por um administrador.');
+                setLoading(false);
+                return;
+            }
+
+            // REGISTER
+            const { error: signUpError } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { role: 'admin' }
+                }
+            });
+
+            if (signUpError) {
+                setError('Erro ao cadastrar. Tente novamente.');
+                setLoading(false);
+            } else {
+                alert('Cadastro realizado com sucesso! Você já pode entrar.');
+                setAuthMode('login');
+                setLoading(false);
+            }
         }
     };
 
@@ -59,7 +89,32 @@ export default function LoginPage() {
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Squad JCR - Gestão de Catálogo</p>
                     </div>
 
-                    <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', marginBottom: '1.5rem' }}>
+                        <button
+                            onClick={() => setAuthMode('login')}
+                            style={{
+                                flex: 1, padding: '1rem', border: 'none', background: 'none', cursor: 'pointer',
+                                borderBottom: authMode === 'login' ? '2px solid var(--navy)' : 'none',
+                                fontWeight: authMode === 'login' ? 600 : 400,
+                                color: authMode === 'login' ? 'var(--navy)' : 'var(--text-muted)'
+                            }}
+                        >
+                            Entrar
+                        </button>
+                        <button
+                            onClick={() => setAuthMode('register')}
+                            style={{
+                                flex: 1, padding: '1rem', border: 'none', background: 'none', cursor: 'pointer',
+                                borderBottom: authMode === 'register' ? '2px solid var(--navy)' : 'none',
+                                fontWeight: authMode === 'register' ? 600 : 400,
+                                color: authMode === 'register' ? 'var(--navy)' : 'var(--text-muted)'
+                            }}
+                        >
+                            Cadastrar
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                         {error && (
                             <div style={{
                                 background: '#fff1f0',
@@ -115,7 +170,7 @@ export default function LoginPage() {
                             style={{ width: '100%', padding: '0.85rem', marginTop: '0.5rem' }}
                             disabled={loading}
                         >
-                            {loading ? <Loader2 className="animate-spin" size={20} /> : 'Entrar no Sistema'}
+                            {loading ? <Loader2 className="animate-spin" size={20} /> : authMode === 'login' ? 'Entrar no Sistema' : 'Criar minha conta'}
                         </button>
                     </form>
                 </div>

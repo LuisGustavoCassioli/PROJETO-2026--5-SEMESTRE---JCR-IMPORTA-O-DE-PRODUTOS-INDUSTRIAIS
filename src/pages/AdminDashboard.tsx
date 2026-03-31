@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import {
     Plus, Search, Edit2, Trash2, Package, LogOut,
-    X, Loader2, UploadCloud, Image as ImageIcon
+    X, Loader2, UploadCloud, Users, Mail, Image as ImageIcon
 } from "lucide-react";
 import './AdminDashboard.css';
 
@@ -17,12 +17,28 @@ interface Product {
     created_at: string;
 }
 
+interface Profile {
+    id: string;
+    email: string;
+    role: string;
+    created_at: string;
+}
+
+interface WhitelistEntry {
+    email: string;
+    created_at: string;
+}
+
 export default function AdminDashboard() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [activeTab, setActiveTab] = useState<'products' | 'users'>('products');
+    const [profiles, setProfiles] = useState<Profile[]>([]);
+    const [whitelist, setWhitelist] = useState<WhitelistEntry[]>([]);
+    const [inviteEmail, setInviteEmail] = useState('');
 
     // Form state
     const [name, setName] = useState('');
@@ -35,8 +51,13 @@ export default function AdminDashboard() {
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        if (activeTab === 'products') {
+            fetchProducts();
+        } else {
+            fetchProfiles();
+            fetchWhitelist();
+        }
+    }, [activeTab]);
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -47,6 +68,32 @@ export default function AdminDashboard() {
 
         if (!error && data) setProducts(data);
         setLoading(false);
+    };
+
+    const fetchProfiles = async () => {
+        const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+        if (data) setProfiles(data);
+    };
+
+    const fetchWhitelist = async () => {
+        const { data } = await supabase.from('whitelist').select('*').order('created_at', { ascending: false });
+        if (data) setWhitelist(data);
+    };
+
+    const handleInvite = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const { error } = await supabase.from('whitelist').insert([{ email: inviteEmail }]);
+        if (error) {
+            alert('Este e-mail já está convidado ou erro na permissão.');
+        } else {
+            setInviteEmail('');
+            fetchWhitelist();
+        }
+    };
+
+    const removeWhitelist = async (email: string) => {
+        await supabase.from('whitelist').delete().eq('email', email);
+        fetchWhitelist();
     };
 
     const handleLogout = async () => {
@@ -192,86 +239,166 @@ export default function AdminDashboard() {
 
             <main className="section">
                 <div className="container">
-                    {/* Actions Bar */}
-                    <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                        <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-                            <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                            <input
-                                type="text"
-                                placeholder="Buscar produtos..."
-                                className="form-input"
-                                style={{ paddingLeft: '40px' }}
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                        <button onClick={() => openModal()} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Plus size={20} /> Novo Produto
+                    {/* Tabs */}
+                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                        <button
+                            onClick={() => setActiveTab('products')}
+                            className="btn"
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                background: activeTab === 'products' ? 'var(--navy)' : 'white',
+                                color: activeTab === 'products' ? 'white' : 'var(--text-main)',
+                                border: activeTab === 'products' ? 'none' : '1px solid var(--border)'
+                            }}
+                        >
+                            <Package size={18} /> Produtos
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('users')}
+                            className="btn"
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                background: activeTab === 'users' ? 'var(--navy)' : 'white',
+                                color: activeTab === 'users' ? 'white' : 'var(--text-main)',
+                                border: activeTab === 'users' ? 'none' : '1px solid var(--border)'
+                            }}
+                        >
+                            <Users size={18} /> Usuários Authorized
                         </button>
                     </div>
 
+                    {activeTab === 'products' ? (
+                        <>
+                            {/* Actions Bar */}
+                            <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                                    <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                    <input
+                                        type="text"
+                                        placeholder="Buscar produtos..."
+                                        className="form-input"
+                                        style={{ paddingLeft: '40px' }}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </div>
+                                <button onClick={() => openModal()} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <Plus size={20} /> Novo Produto
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem' }}>
+                            {/* Invite and Whitelist */}
+                            <div className="card" style={{ padding: '2rem' }}>
+                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Mail size={20} /> Convidar Administradores</h3>
+                                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                                    Adicione o e-mail dos patrões ou pessoal autorizado abaixo. Isso permitirá que eles façam o cadastro no sistema.
+                                </p>
+                                <form onSubmit={handleInvite} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                                    <input
+                                        type="email"
+                                        className="form-input"
+                                        required
+                                        placeholder="email@exemplo.com"
+                                        value={inviteEmail}
+                                        onChange={e => setInviteEmail(e.target.value)}
+                                    />
+                                    <button type="submit" className="btn btn-primary">Autorizar E-mail</button>
+                                </form>
+
+                                <h4 style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>E-mails Autorizados (Aguardando cadastro)</h4>
+                                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                    {whitelist.length === 0 ? (
+                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Nenhum convite pendente.</p>
+                                    ) : whitelist.map(entry => (
+                                        <div key={entry.email} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', borderBottom: '1px solid var(--border)' }}>
+                                            <span style={{ fontSize: '0.9rem' }}>{entry.email}</span>
+                                            <button onClick={() => removeWhitelist(entry.email)} className="btn" style={{ color: 'var(--red)', padding: '0.2rem' }} title="Remover autorização"><Trash2 size={14} /></button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Active Profiles */}
+                            <div className="card" style={{ padding: '2rem' }}>
+                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Users size={20} /> Ativos</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    {profiles.map(profile => (
+                                        <div key={profile.id} style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '8px' }}>
+                                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{profile.email}</div>
+                                            <div style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: 'bold', textTransform: 'uppercase', marginTop: '2px' }}>{profile.role}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* List */}
-                    <div className="card" style={{ overflow: 'hidden' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead style={{ background: '#f8f9fa', borderBottom: '1px solid var(--border)' }}>
-                                <tr>
-                                    <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>PRODUTO</th>
-                                    <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>CATEGORIA</th>
-                                    <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>TAGS</th>
-                                    <th style={{ textAlign: 'right', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>AÇÕES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
+                    {activeTab === 'products' && (
+                        <div className="card" style={{ overflow: 'hidden' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead style={{ background: '#f8f9fa', borderBottom: '1px solid var(--border)' }}>
                                     <tr>
-                                        <td colSpan={4} style={{ textAlign: 'center', padding: '3rem' }}>
-                                            <Loader2 className="animate-spin" size={32} style={{ color: 'var(--navy)', margin: '0 auto' }} />
-                                            <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>Carregando catálogo...</p>
-                                        </td>
+                                        <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>PRODUTO</th>
+                                        <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>CATEGORIA</th>
+                                        <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>TAGS</th>
+                                        <th style={{ textAlign: 'right', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>AÇÕES</th>
                                     </tr>
-                                ) : filteredProducts.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} style={{ textAlign: 'center', padding: '3rem' }}>
-                                            <Package size={48} style={{ color: '#d1dae6', margin: '0 auto 1rem' }} />
-                                            <p style={{ color: 'var(--text-muted)' }}>Nenhum produto cadastrado.</p>
-                                        </td>
-                                    </tr>
-                                ) : filteredProducts.map(p => (
-                                    <tr key={p.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                                <div style={{ width: '48px', height: '48px', borderRadius: '4px', background: '#eee', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                                    {p.image_url ? (
-                                                        <img src={p.image_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                    ) : (
-                                                        <ImageIcon size={20} style={{ color: 'var(--text-muted)' }} />
-                                                    )}
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={4} style={{ textAlign: 'center', padding: '3rem' }}>
+                                                <Loader2 className="animate-spin" size={32} style={{ color: 'var(--navy)', margin: '0 auto' }} />
+                                                <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>Carregando catálogo...</p>
+                                            </td>
+                                        </tr>
+                                    ) : filteredProducts.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={4} style={{ textAlign: 'center', padding: '3rem' }}>
+                                                <Package size={48} style={{ color: '#d1dae6', margin: '0 auto 1rem' }} />
+                                                <p style={{ color: 'var(--text-muted)' }}>Nenhum produto cadastrado.</p>
+                                            </td>
+                                        </tr>
+                                    ) : filteredProducts.map(p => (
+                                        <tr key={p.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                                            <td style={{ padding: '1rem' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                    <div style={{ width: '48px', height: '48px', borderRadius: '4px', background: '#eee', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                        {p.image_url ? (
+                                                            <img src={p.image_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                        ) : (
+                                                            <ImageIcon size={20} style={{ color: 'var(--text-muted)' }} />
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <div style={{ fontWeight: 600, color: 'var(--navy)' }}>{p.name}</div>
+                                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.description}</div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div style={{ fontWeight: 600, color: 'var(--navy)' }}>{p.name}</div>
-                                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.description}</div>
+                                            </td>
+                                            <td style={{ padding: '1rem' }}>
+                                                <span className="badge" style={{ margin: 0, textTransform: 'capitalize' }}>{p.category}</span>
+                                            </td>
+                                            <td style={{ padding: '1rem' }}>
+                                                <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                                                    {p.tags.map(t => <span key={t} style={{ fontSize: '0.65rem', background: '#eee', padding: '2px 6px', borderRadius: '4px' }}>{t}</span>)}
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <span className="badge" style={{ margin: 0, textTransform: 'capitalize' }}>{p.category}</span>
-                                        </td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                                                {p.tags.map(t => <span key={t} style={{ fontSize: '0.65rem', background: '#eee', padding: '2px 6px', borderRadius: '4px' }}>{t}</span>)}
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                                                <button onClick={() => openModal(p)} className="btn" style={{ padding: '0.4rem', color: 'var(--navy)' }} title="Editar"><Edit2 size={16} /></button>
-                                                <button onClick={() => handleDelete(p.id)} className="btn" style={{ padding: '0.4rem', color: 'var(--red)' }} title="Excluir"><Trash2 size={16} /></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                            </td>
+                                            <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                                    <button onClick={() => openModal(p)} className="btn" style={{ padding: '0.4rem', color: 'var(--navy)' }} title="Editar"><Edit2 size={16} /></button>
+                                                    <button onClick={() => handleDelete(p.id)} className="btn" style={{ padding: '0.4rem', color: 'var(--red)' }} title="Excluir"><Trash2 size={16} /></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </main>
 
