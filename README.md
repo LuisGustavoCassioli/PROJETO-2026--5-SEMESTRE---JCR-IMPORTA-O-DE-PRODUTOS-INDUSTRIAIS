@@ -1,92 +1,84 @@
-# ⚙️ JCR Produtos Industriais: Modernização e Migração para Nuvem
+# ⚙️ JCR Produtos Industriais: Modernização e Gestão Cloud
 
 ## Projeto de Extensão - 5º Semestre ADS (UNINOVE)
 
 ## 🚀 Visão Geral
 
-Este projeto documenta e executa a modernização da plataforma digital da **JCR Importação de Produtos Industriais**. O sistema original, baseado em páginas estáticas de baixo desempenho, foi refatorado para uma arquitetura Cloud escalável, focando em performance (Lighthouse > 85), SEO e facilidade de gestão de catálogo.
+Este projeto documenta a modernização da plataforma digital da **JCR Importação de Produtos Industriais**. O sistema foi refatorado de uma estrutura legada para uma arquitetura Cloud moderna, focando em alta performance, SEO industrial e uma gestão de catálogo robusta e simplificada.
 
 ---
 
 ## 👥 Squad JCR (Grupo 6)
 
-* **Luis Gustavo Cassioli Rodrigues**
-* **Eduardo de Castro Freitas**
-* **Samuel de Lucas Silva**
-* **Paulo Nlandu Onde Mavuba**
-* **Carlos Henrique Gomes Santos**
-* **Lucas Nunes**
+- **Luis Gustavo Cassioli Rodrigues**
+- **Eduardo de Castro Freitas**
+- **Samuel de Lucas Silva**
+- **Paulo Nlandu Onde Mavuba**
+- **Carlos Henrique Gomes Santos**
+- **Lucas Nunes**
 
 ---
 
 ## 🏗️ Arquitetura e Stack Tecnológica
 
-A solução foi construída utilizando tecnologias de ponta para garantir um ambiente robusto e de fácil manutenção:
+A solução utiliza tecnologias de última geração para garantir escalabilidade e segurança:
 
-* **Frontend**: [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/) (Tipagem forte e HMR ultra-rápido)
-* **Backend (BaaS)**: [Supabase](https://supabase.com/) (PostgreSQL, Row Level Security e Realtime)
-* **Infraestrutura**: [Vercel](https://vercel.com/) (Hospedagem Cloud com CI/CD via GitHub)
-* **Engenharia Reversa**: [HTTrack](https://www.httrack.com/) para extração do sistema legado
-
----
-
-## 📊 Metas de Engenharia
-
-Conforme definido na documentação ABNT:
-
-1. **Performance**: Tempo de carregamento inferior a 2,5 segundos.
-2. **SEO**: Estrutura semântica para indexação de produtos industriais.
-3. **Gestão**: Implementação de área administrativa protegida para CRUD de produtos.
+- **Frontend**: [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/)
+- **Backend (BaaS)**: [Supabase](https://supabase.com/) (PostgreSQL + Auth + Storage)
+- **Hospedagem**: [Vercel](https://vercel.com/) (Deploy contínuo via GitHub)
+- **Estilização**: CSS Moderno (Vanilla CSS) com foco em Glassmorphism
 
 ---
 
-## � Área Administrativa
+## � Gestão Industrial (Área Restrita)
 
-O sistema possui uma área restrita para gestão de produtos:
+O sistema possui um painel administrativo protegido e obscurecido para a equipe:
 
-* **URL:** `/login` -> `/admin`
-* **Funcionalidades:** CRUD completo (Criar, Listar, Editar, Excluir) de produtos industriais.
-* **Segurança:** Proteção via Supabase Auth e Componente de Rota Protegida.
+- **Acesso de Login:** `/acesso-interno`
+- **Painel Operacional:** `/gestao-operacional`
+
+### Funcionalidades Principais
+
+- **Catálogo Dinâmico**: CRUD completo de produtos (Cadastrar, Listar, Editar, Excluir).
+- **Galeria Inteligente**: Upload de múltiplas imagens por produto com armazenamento em nuvem.
+- **Hierarquia de Acesso**: Separação entre contas **Mestre (Patrão)** e **Staff (Equipe)**.
+- **Segurança Industrial**: Login simplificado por códigos (ex: `nome+jcr`) com mapeamento seguro em background.
 
 ---
 
-## 🛠️ Configuração do Banco de Dados (Supabase)
-
-Para inicializar o banco de dados, execute o script SQL contido na pasta `brain` do projeto (ou no Supabase Dashboard) que cria a tabela `products` e configura as políticas de RLS (Row Level Security).
-
----
-
-## 🚀 Como rodar o projeto localmente
+## 🚀 Como Rodar o Projeto Localmente
 
 ```bash
-# Instalar dependências
+# 1. Instalar dependências
 npm install
 
-# Configurar variáveis de ambiente
-# Crie um arquivo .env na raiz com:
+# 2. Configurar variáveis de ambiente
+# Crie um arquivo .env na raiz com as chaves do Supabase:
 # VITE_SUPABASE_URL=seu_url
 # VITE_SUPABASE_ANON_KEY=sua_chave
 
-# Rodar em modo desenvolvimento
+# 3. Rodar em modo desenvolvimento
 npm run dev
 
-# Gerar build de produção
+# 4. Gerar build de produção
 npm run build
 ```
 
 ---
 
-## �🔗 Links do Projeto
+## 🔗 Links do Projeto
 
-* **Site do Cliente (Legado):** [jcrprodutosindustriais.com.br](https://www.jcrprodutosindustriais.com.br/)
-* **Produção (Vercel):** *[Inserir Link após Deploy]*
-* **Documentação PDF:** *[Inserir Link]*
-* **Apresentação:** *[Inserir Link do Vídeo]*
+- **Produção (Vercel):** [jcr-importacao-de-produtos-industriais.vercel.app](https://jcr-importacao-de-produtos-industriais.vercel.app)
+- **Repositório (GitHub):** [Acessar Código-Fonte](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS)
+- **Manual de Operação:** [INSTRUCOES.md](./INSTRUCOES.md) (Guia para a equipe de 7 pessoas)
 
 ---
 
 ## 📁 Estrutura de Pastas
 
-* `/src`: Código-fonte da aplicação React/TS.
-* `/public`: Assets estáticos e imagens otimizadas.
-* `/legacy`: Arquivos originais mapeados para engenharia reversa.
+- `/src`: Código-fonte (Componentes, Páginas, Hooks e Serviços).
+- `/public`: Assets estáticos e ícones.
+- `/github/workflows`: Automação de manutenção do banco de dados.
+
+---
+*Squad JCR - 2026*
