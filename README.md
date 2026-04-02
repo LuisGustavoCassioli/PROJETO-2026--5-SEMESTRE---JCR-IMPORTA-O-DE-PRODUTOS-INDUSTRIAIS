@@ -4,35 +4,54 @@
 
 ## 🚀 Visão Geral
 
-Este projeto documenta a modernização da plataforma digital da **JCR Importação de Produtos Industriais**. O sistema foi refatorado de uma estrutura legada para uma arquitetura Cloud moderna, focando em alta performance, SEO industrial e uma gestão de catálogo robusta e simplificada.
+Este projeto tem como objetivo a modernização da plataforma digital da **JCR Importação de Produtos Industriais**. O sistema foi refatorado de uma estrutura legada para uma arquitetura Cloud moderna, focando em alta performance, SEO otimizado para produtos industriais e uma gestão de catálogo robusta e simplificada.
 
+---
+
+## 🎯 Problema
+
+O sistema anterior apresentava:
+
+- Baixo desempenho
+- Dificuldade de manutenção
+- Ausência de painel administrativo
+- Estrutura não otimizada para SEO
+  
 ---
 
 ## 👥 Squad JCR (Grupo 6)
 
-- **Luis Gustavo Cassioli Rodrigues**
-- **Eduardo de Castro Freitas**
-- **Samuel de Lucas Silva**
-- **Paulo Nlandu Onde Mavuba**
-- **Carlos Henrique Gomes Santos**
-- **Lucas Nunes**
-
+- **Eduardo de Castro Freitas - 3024105801**
+- **Carlos Henrique Gomes Santos - 3026106005**
+- **Luis Gustavo Cassioli Rodrigues - 3023204201** (Líder)
+- **Lucas Nunes - 3026105890**
+- **Samuel de Lucas Silva - 3024105321**
+- **Paulo Nlandu Onde Mavuba - 3026106430**
+  
 ---
 
 ## 🏗️ Arquitetura e Stack Tecnológica
 
-A solução utiliza tecnologias de última geração para garantir escalabilidade e segurança:
+A solução utiliza tecnologias modernas para garantir escalabilidade, segurança e alta performance:
 
 - **Frontend**: [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/)
 - **Backend (BaaS)**: [Supabase](https://supabase.com/) (PostgreSQL + Auth + Storage)
-- **Hospedagem**: [Vercel](https://vercel.com/) (Deploy contínuo via GitHub)
+- **Hospedagem**: Vercel (CI/CD com integração ao GitHub)
 - **Estilização**: CSS Moderno (Vanilla CSS) com foco em Glassmorphism
 
 ---
 
-## � Gestão Industrial (Área Restrita)
+## 📊 Metas de Engenharia
 
-O sistema possui um painel administrativo protegido e obscurecido para a equipe:
+- **Performance:** Carregamento inferior a 2,5 segundos  
+- **SEO:** Estrutura otimizada para indexação de produtos  
+- **Gestão:** Sistema administrativo completo para catálogo
+
+---
+
+## 🔐 Gestão Industrial (Área Restrita)
+
+O sistema possui um painel administrativo protegido e de acesso restrito:
 
 - **Acesso de Login:** `/acesso-interno`
 - **Painel Operacional:** `/gestao-operacional`
@@ -42,11 +61,11 @@ O sistema possui um painel administrativo protegido e obscurecido para a equipe:
 - **Catálogo Dinâmico**: CRUD completo de produtos (Cadastrar, Listar, Editar, Excluir).
 - **Galeria Inteligente**: Upload de múltiplas imagens por produto com armazenamento em nuvem.
 - **Hierarquia de Acesso**: Separação entre contas **Mestre (Patrão)** e **Staff (Equipe)**.
-- **Segurança Industrial**: Login simplificado por códigos (ex: `nome+jcr`) com mapeamento seguro em background.
+- **Autenticação Segura**: Sistema baseado em Supabase Auth com controle de acesso por perfil.
 
 ---
 
-## 🚀 Como Rodar o Projeto Localmente
+## 🚀 Execução Local
 
 ```bash
 # 1. Instalar dependências
@@ -70,7 +89,7 @@ npm run build
 
 - **Produção (Vercel):** [jcr-importacao-de-produtos-industriais.vercel.app](https://jcr-importacao-de-produtos-industriais.vercel.app)
 - **Repositório (GitHub):** [Acessar Código-Fonte](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS)
-- **Manual de Operação:** [INSTRUCOES.md](./INSTRUCOES.md) (Guia para a equipe de 7 pessoas)
+- **Manual de Operação:** [INSTRUCOES.md](./INSTRUCOES.md) (Guia de uso para a equipe)
 
 ---
 
@@ -78,7 +97,8 @@ npm run build
 
 - `/src`: Código-fonte (Componentes, Páginas, Hooks e Serviços).
 - `/public`: Assets estáticos e ícones.
-- `/github/workflows`: Automação de manutenção do banco de dados.
+- `.github/workflows`: Automação de deploy e manutenção ao banco de dados.
 
 ---
-*Squad JCR - 2026*
+
+Squad JCR - 2026
