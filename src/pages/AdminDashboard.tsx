@@ -35,10 +35,12 @@ export default function AdminDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [currentUserProfile, setCurrentUserProfile] = useState<Profile | null>(null);
     const [activeTab, setActiveTab] = useState<'products' | 'users'>('products');
     const [profiles, setProfiles] = useState<Profile[]>([]);
     const [whitelist, setWhitelist] = useState<WhitelistEntry[]>([]);
     const [inviteEmail, setInviteEmail] = useState('');
+    const [inviteRole, setInviteRole] = useState<'admin' | 'staff'>('staff');
 
     // Form state
     const [name, setName] = useState('');
@@ -51,6 +53,7 @@ export default function AdminDashboard() {
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
+        fetchCurrentUser();
         if (activeTab === 'products') {
             fetchProducts();
         } else {
@@ -58,6 +61,14 @@ export default function AdminDashboard() {
             fetchWhitelist();
         }
     }, [activeTab]);
+
+    const fetchCurrentUser = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+            if (data) setCurrentUserProfile(data);
+        }
+    };
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -84,11 +95,15 @@ export default function AdminDashboard() {
         e.preventDefault();
         const cleanInput = inviteEmail.trim().toLowerCase();
         const mappedEmail = cleanInput.includes('@') ? cleanInput : `${cleanInput}@jcr.com.br`;
-        const { error } = await supabase.from('whitelist').insert([{ email: mappedEmail }]);
+        const { error } = await supabase.from('whitelist').insert([{
+            email: mappedEmail,
+            role: inviteRole
+        }]);
         if (error) {
             alert('Este usuário já está autorizado ou erro na permissão.');
         } else {
             setInviteEmail('');
+            setInviteRole('staff');
             fetchWhitelist();
         }
     };
@@ -259,18 +274,20 @@ export default function AdminDashboard() {
                         >
                             <Package size={18} /> Produtos
                         </button>
-                        <button
-                            onClick={() => setActiveTab('users')}
-                            className="btn"
-                            style={{
-                                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                background: activeTab === 'users' ? 'var(--navy)' : 'white',
-                                color: activeTab === 'users' ? 'white' : 'var(--text-main)',
-                                border: activeTab === 'users' ? 'none' : '1px solid var(--border)'
-                            }}
-                        >
-                            <Users size={18} /> Gestão de Acessos
-                        </button>
+                        {currentUserProfile?.role === 'admin' && (
+                            <button
+                                onClick={() => setActiveTab('users')}
+                                className="btn"
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                    background: activeTab === 'users' ? 'var(--navy)' : 'white',
+                                    color: activeTab === 'users' ? 'white' : 'var(--text-main)',
+                                    border: activeTab === 'users' ? 'none' : '1px solid var(--border)'
+                                }}
+                            >
+                                <Users size={18} /> Gestão de Acessos
+                            </button>
+                        )}
                     </div>
 
                     {activeTab === 'products' ? (
@@ -301,16 +318,28 @@ export default function AdminDashboard() {
                                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
                                     Adicione o <strong>Usuário / Código</strong> dos patrões (ex: nome+JCR). Isso permitirá que eles acessem o sistema sem precisar de e-mail real.
                                 </p>
-                                <form onSubmit={handleInvite} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        required
-                                        placeholder="usuário+JCR"
-                                        value={inviteEmail}
-                                        onChange={e => setInviteEmail(e.target.value)}
-                                    />
-                                    <button type="submit" className="btn btn-primary">Autorizar</button>
+                                <form onSubmit={handleInvite} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <input
+                                            type="text"
+                                            className="form-input"
+                                            required
+                                            placeholder="usuário+JCR"
+                                            value={inviteEmail}
+                                            onChange={e => setInviteEmail(e.target.value)}
+                                            style={{ flex: 1 }}
+                                        />
+                                        <select
+                                            className="form-input"
+                                            value={inviteRole}
+                                            onChange={e => setInviteRole(e.target.value as 'admin' | 'staff')}
+                                            style={{ width: '150px' }}
+                                        >
+                                            <option value="staff">Staff (Equipe)</option>
+                                            <option value="admin">Mestre (Patrão)</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Autorizar Acesso</button>
                                 </form>
 
                                 <h4 style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Acesso Autorizado (Aguardando primeiro acesso)</h4>
