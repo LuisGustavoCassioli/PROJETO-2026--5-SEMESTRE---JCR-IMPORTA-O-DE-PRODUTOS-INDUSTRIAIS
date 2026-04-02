@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Phone, MessageCircle, CheckCircle, ArrowRight, ChevronRight } from 'lucide-react';
+import ContactForm from '../components/ContactForm';
 import './HomePage.css';
 
 /* SVG instrument illustrations */
@@ -247,6 +248,13 @@ export default function HomePage() {
                             Solicitar Cotação <ChevronRight size={16} />
                         </a>
                     </div>
+                </div>
+            </section>
+
+            {/* ── CONTACT FORM ── */}
+            <section className="section" id="contato">
+                <div className="container">
+                    <ContactForm />
                 </div>
             </section>
 

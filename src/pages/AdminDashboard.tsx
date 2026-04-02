@@ -26,6 +26,18 @@ interface Profile {
 
 interface WhitelistEntry {
     email: string;
+    role: string;
+    created_at: string;
+}
+
+interface Lead {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    company: string;
+    message: string;
+    status: string;
     created_at: string;
 }
 
@@ -36,9 +48,10 @@ export default function AdminDashboard() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [currentUserProfile, setCurrentUserProfile] = useState<Profile | null>(null);
-    const [activeTab, setActiveTab] = useState<'products' | 'users'>('products');
+    const [activeTab, setActiveTab] = useState<'products' | 'users' | 'leads'>('products');
     const [profiles, setProfiles] = useState<Profile[]>([]);
     const [whitelist, setWhitelist] = useState<WhitelistEntry[]>([]);
+    const [leads, setLeads] = useState<Lead[]>([]);
     const [inviteEmail, setInviteEmail] = useState('');
     const [inviteRole, setInviteRole] = useState<'admin' | 'staff'>('staff');
 
@@ -56,9 +69,11 @@ export default function AdminDashboard() {
         fetchCurrentUser();
         if (activeTab === 'products') {
             fetchProducts();
-        } else {
+        } else if (activeTab === 'users') {
             fetchProfiles();
             fetchWhitelist();
+        } else if (activeTab === 'leads') {
+            fetchLeads();
         }
     }, [activeTab]);
 
@@ -89,6 +104,24 @@ export default function AdminDashboard() {
     const fetchWhitelist = async () => {
         const { data } = await supabase.from('whitelist').select('*').order('created_at', { ascending: false });
         if (data) setWhitelist(data);
+    };
+
+    const fetchLeads = async () => {
+        setLoading(true);
+        const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+        if (!error && data) setLeads(data);
+        setLoading(false);
+    };
+
+    const handleDeleteLead = async (id: string) => {
+        if (!confirm('Excluir este contato permanentemente?')) return;
+        const { error } = await supabase.from('leads').delete().eq('id', id);
+        if (!error) fetchLeads();
+    };
+
+    const handleUpdateLeadStatus = async (id: string, status: string) => {
+        const { error } = await supabase.from('leads').update({ status }).eq('id', id);
+        if (!error) fetchLeads();
     };
 
     const handleInvite = async (e: React.FormEvent) => {
@@ -285,9 +318,21 @@ export default function AdminDashboard() {
                                     border: activeTab === 'users' ? 'none' : '1px solid var(--border)'
                                 }}
                             >
-                                <Users size={18} /> Gestão de Acessos
+                                <Users size={18} /> Gestão de Equipe
                             </button>
                         )}
+                        <button
+                            onClick={() => setActiveTab('leads')}
+                            className="btn"
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                background: activeTab === 'leads' ? 'var(--navy)' : 'white',
+                                color: activeTab === 'leads' ? 'white' : 'var(--text-main)',
+                                border: activeTab === 'leads' ? 'none' : '1px solid var(--border)'
+                            }}
+                        >
+                            <Mail size={18} /> Clientes/Leads
+                        </button>
                     </div>
 
                     {activeTab === 'products' ? (
@@ -432,6 +477,82 @@ export default function AdminDashboard() {
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+                    )}
+                    {activeTab === 'leads' && (
+                        <div className="admin-card">
+                            <div className="admin-card-header">
+                                <h3>Mensagens de Clientes (Leads)</h3>
+                                <p>Gerencie as solicitações de orçamento recebidas pelo site.</p>
+                            </div>
+
+                            <div className="table-responsive">
+                                <table className="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Cliente</th>
+                                            <th>Empresa</th>
+                                            <th>Mensagem</th>
+                                            <th>Status</th>
+                                            <th className="text-right">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {leads.map(lead => (
+                                            <tr key={lead.id}>
+                                                <td style={{ fontSize: '0.8rem' }}>{new Date(lead.created_at).toLocaleDateString()}</td>
+                                                <td>
+                                                    <div style={{ fontWeight: 600 }}>{lead.name}</div>
+                                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{lead.email}</div>
+                                                    {lead.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{lead.phone}</div>}
+                                                </td>
+                                                <td>{lead.company || '-'}</td>
+                                                <td>
+                                                    <div style={{
+                                                        maxWidth: '300px',
+                                                        fontSize: '0.85rem',
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 3,
+                                                        WebkitBoxOrient: 'vertical',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {lead.message}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <select
+                                                        value={lead.status}
+                                                        onChange={(e) => handleUpdateLeadStatus(lead.id, e.target.value)}
+                                                        className="form-input"
+                                                        style={{ padding: '0.2rem', fontSize: '0.8rem', width: 'auto' }}
+                                                    >
+                                                        <option value="new">Novo</option>
+                                                        <option value="contactado">Contactado</option>
+                                                        <option value="concluido">Concluído</option>
+                                                    </select>
+                                                </td>
+                                                <td className="text-right">
+                                                    <button
+                                                        className="action-btn delete"
+                                                        onClick={() => handleDeleteLead(lead.id)}
+                                                        title="Excluir Lead"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {leads.length === 0 && (
+                                            <tr>
+                                                <td colSpan={6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+                                                    Nenhuma mensagem recebida ainda.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )}
                 </div>

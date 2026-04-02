@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight, MapPin, Phone, MessageCircle, Mail, CheckCircle, Users, Target, Zap } from 'lucide-react';
+import ContactForm from '../components/ContactForm';
 import './SobreNosPage.css';
 
 export default function SobreNosPage() {
@@ -45,6 +46,10 @@ export default function SobreNosPage() {
                             <div className="visual-number">100<span>%</span></div>
                             <p>Comprometimento com qualidade e pontualidade</p>
                         </div>
+                    </div>
+
+                    <div className="contact-form-side">
+                        <ContactForm />
                     </div>
                 </div>
             </section>

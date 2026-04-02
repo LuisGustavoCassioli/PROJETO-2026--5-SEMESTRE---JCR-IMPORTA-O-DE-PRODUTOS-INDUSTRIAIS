@@ -196,3 +196,27 @@
 @media (max-width: 480px) {
   .commitments { grid-template-columns: 1fr; }
 }
+
+/* ── Contact Layout Refinement (For Lead Form) ── */
+.contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-bottom: 4rem;
+}
+
+.contact-form-side {
+    position: sticky;
+    top: 100px;
+}
+
+@media (max-width: 992px) {
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .contact-form-side {
+        position: static;
+    }
+}
