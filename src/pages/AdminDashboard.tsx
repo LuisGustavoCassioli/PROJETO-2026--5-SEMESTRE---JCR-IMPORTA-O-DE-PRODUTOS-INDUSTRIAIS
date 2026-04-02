@@ -335,27 +335,25 @@ export default function AdminDashboard() {
                         </button>
                     </div>
 
-                    {activeTab === 'products' ? (
-                        <>
-                            {/* Actions Bar */}
-                            <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                                <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-                                    <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                                    <input
-                                        type="text"
-                                        placeholder="Buscar produtos..."
-                                        className="form-input"
-                                        style={{ paddingLeft: '40px' }}
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                </div>
-                                <button onClick={() => openModal()} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <Plus size={20} /> Novo Produto
-                                </button>
+                    {activeTab === 'products' && (
+                        <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                            <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                                <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar produtos..."
+                                    className="form-input"
+                                    style={{ paddingLeft: '40px' }}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
                             </div>
-                        </>
-                    ) : (
+                            <button onClick={() => openModal()} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <Plus size={20} /> Novo Produto
+                            </button>
+                        </div>
+                    )}
+                    {activeTab === 'users' && currentUserProfile?.role === 'admin' && (
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem' }}>
                             {/* Invite and Whitelist */}
                             <div className="card" style={{ padding: '2rem' }}>
@@ -480,62 +478,66 @@ export default function AdminDashboard() {
                         </div>
                     )}
                     {activeTab === 'leads' && (
-                        <div className="admin-card">
-                            <div className="admin-card-header">
-                                <h3>Mensagens de Clientes (Leads)</h3>
-                                <p>Gerencie as solicitações de orçamento recebidas pelo site.</p>
+                        <div className="card" style={{ overflow: 'hidden' }}>
+                            <div style={{ padding: '2rem', borderBottom: '1px solid var(--border)' }}>
+                                <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                    <Mail size={20} /> Mensagens de Clientes (Leads)
+                                </h3>
+                                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Gerencie as solicitações de orçamento recebidas pelo site.</p>
                             </div>
 
-                            <div className="table-responsive">
-                                <table className="admin-table">
-                                    <thead>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead style={{ background: '#f8f9fa', borderBottom: '1px solid var(--border)' }}>
                                         <tr>
-                                            <th>Data</th>
-                                            <th>Cliente</th>
-                                            <th>Empresa</th>
-                                            <th>Mensagem</th>
-                                            <th>Status</th>
-                                            <th className="text-right">Ações</th>
+                                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>DATA</th>
+                                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>CLIENTE</th>
+                                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>EMPRESA</th>
+                                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>MENSAGEM</th>
+                                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>STATUS</th>
+                                            <th style={{ textAlign: 'right', padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>AÇÕES</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {leads.map(lead => (
-                                            <tr key={lead.id}>
-                                                <td style={{ fontSize: '0.8rem' }}>{new Date(lead.created_at).toLocaleDateString()}</td>
-                                                <td>
-                                                    <div style={{ fontWeight: 600 }}>{lead.name}</div>
+                                            <tr key={lead.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                                                <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{new Date(lead.created_at).toLocaleDateString()}</td>
+                                                <td style={{ padding: '1rem' }}>
+                                                    <div style={{ fontWeight: 600, color: 'var(--navy)' }}>{lead.name}</div>
                                                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{lead.email}</div>
                                                     {lead.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{lead.phone}</div>}
                                                 </td>
-                                                <td>{lead.company || '-'}</td>
-                                                <td>
+                                                <td style={{ padding: '1rem', fontSize: '0.9rem' }}>{lead.company || '-'}</td>
+                                                <td style={{ padding: '1rem' }}>
                                                     <div style={{
                                                         maxWidth: '300px',
                                                         fontSize: '0.85rem',
                                                         display: '-webkit-box',
                                                         WebkitLineClamp: 3,
                                                         WebkitBoxOrient: 'vertical',
-                                                        overflow: 'hidden'
+                                                        overflow: 'hidden',
+                                                        lineHeight: '1.4'
                                                     }}>
                                                         {lead.message}
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td style={{ padding: '1rem' }}>
                                                     <select
                                                         value={lead.status}
                                                         onChange={(e) => handleUpdateLeadStatus(lead.id, e.target.value)}
                                                         className="form-input"
-                                                        style={{ padding: '0.2rem', fontSize: '0.8rem', width: 'auto' }}
+                                                        style={{ padding: '0.4rem', fontSize: '0.85rem', width: 'auto' }}
                                                     >
                                                         <option value="new">Novo</option>
                                                         <option value="contactado">Contactado</option>
                                                         <option value="concluido">Concluído</option>
                                                     </select>
                                                 </td>
-                                                <td className="text-right">
+                                                <td style={{ padding: '1rem', textAlign: 'right' }}>
                                                     <button
-                                                        className="action-btn delete"
                                                         onClick={() => handleDeleteLead(lead.id)}
+                                                        className="btn"
+                                                        style={{ padding: '0.4rem', color: 'var(--red)' }}
                                                         title="Excluir Lead"
                                                     >
                                                         <Trash2 size={16} />
@@ -545,8 +547,9 @@ export default function AdminDashboard() {
                                         ))}
                                         {leads.length === 0 && (
                                             <tr>
-                                                <td colSpan={6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
-                                                    Nenhuma mensagem recebida ainda.
+                                                <td colSpan={6} style={{ textAlign: 'center', padding: '4rem' }}>
+                                                    <Mail size={48} style={{ color: '#d1dae6', margin: '0 auto 1rem' }} />
+                                                    <p style={{ color: 'var(--text-muted)' }}>Nenhuma mensagem recebida ainda.</p>
                                                 </td>
                                             </tr>
                                         )}
