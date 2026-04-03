@@ -87,10 +87,11 @@ npm run build
 
 ## 🔗 Links do Projeto
 
-- **Produção (Vercel):** [jcr-importacao-de-produtos-industriais.vercel.app](https://jcr-importacao-de-produtos-industriais.vercel.app)
-- **Repositório (GitHub):** [Acessar Código-Fonte](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS)
-- **Documentação Oficial:** [JCR_UNINOVE_ABNT.pdf](./public/JCR_UNINOVE_ABNT.pdf) (Trabalho Acadêmico)
-- **Manual de Operação:** [INSTRUCOES.md](./INSTRUCOES.md) (Guia de uso para a equipe)
+- **💻 Site em Produção (Cloud):** [jcr-importacao-de-produtos-industriais.vercel.app](https://jcr-importacao-de-produtos-industriais.vercel.app)
+- **📹 Vídeo de Apresentação (Mín. 5 min):** [COLAR LINK DO YOUTUBE AQUI] 👈
+- **📂 Repositório (GitHub):** [Acessar Código-Fonte](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS)
+- **📄 Documentação Oficial:** [JCR_UNINOVE_ABNT.pdf](./public/JCR_UNINOVE_ABNT.pdf) (Trabalho Acadêmico)
+- **📖 Manual de Operação:** [INSTRUCOES.md](./INSTRUCOES.md) (Guia para a equipe)
 
 ---
 
