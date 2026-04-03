@@ -139,7 +139,7 @@ export default function LoginPage() {
                                 <input
                                     type="text"
                                     className="form-input"
-                                    placeholder="nome+JCR"
+                                    placeholder="nomejcr"
                                     style={{ paddingLeft: '40px' }}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}

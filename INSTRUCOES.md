@@ -6,7 +6,7 @@ Este guia explica como operar o sistema de catálogo com a hierarquia de **Patr�
 
 ## 1. Como a Equipe Acessa o Sistema
 
-Não utilizamos e-mails pessoais ou comuns. O sistema utiliza um formato de **Usuário / Código** único para cada colaborador (ex: `jose+jcr`).
+Não utilizamos e-mails pessoais ou comuns. O sistema utiliza um formato de **Usuário / Código** único para cada colaborador (ex: `josejcr`).
 
 * **Para entrar (Login)**: Digite o Usuário e a Senha na aba "Entrar".
 * **Para criar a conta (Cadastro)**: A aba "Cadastrar" só funcionará se o Usuário tiver sido autorizado previamente por um Patrão no painel.
