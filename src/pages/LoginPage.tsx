@@ -47,12 +47,21 @@ export default function LoginPage() {
                 return;
             }
 
-            // REGISTER
+            // 1. Get role from whitelist
+            const { data: whitelistData } = await supabase
+                .from('whitelist')
+                .select('role')
+                .eq('email', mappedEmail)
+                .single();
+
+            const userRole = whitelistData?.role || 'staff';
+
+            // 2. REGISTER
             const { error: signUpError } = await supabase.auth.signUp({
                 email: mappedEmail,
                 password,
                 options: {
-                    data: { role: 'admin' }
+                    data: { role: userRole }
                 }
             });
 
