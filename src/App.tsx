@@ -32,9 +32,9 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-          {/* Redirecionamentos para rotas antigas ou inexistentes para esconder a admin */}
-          <Route path="/admin" element={<Navigate to="/" replace />} />
-          <Route path="/login" element={<Navigate to="/" replace />} />
+          {/* Redirecionamentos para rotas antigas ou para alinhar com a documentação acadêmica */}
+          <Route path="/admin" element={<Navigate to="/acesso-interno" replace />} />
+          <Route path="/login" element={<Navigate to="/acesso-interno" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
