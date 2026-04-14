@@ -34,7 +34,6 @@ export default function ProdutosPage() {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     useEffect(() => {
-        // ... (fetch logic remains same)
         const fetchProducts = async () => {
             setLoading(true);
             const { data, error } = await supabase
@@ -123,6 +122,19 @@ export default function ProdutosPage() {
                     <div className="products-results">
                         <div className="results-header">
                             {/* Functional Search Bar */}
+                            {/* Mobile Filters (Horizontal Scroll) */}
+                            <div className="mobile-categories">
+                                {categories.map(cat => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setActive(cat)}
+                                        className={`mobile-cat-btn ${active === cat ? 'active ' + categoryClasses[cat] : ''}`}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
+
                             <div className="search-container">
                                 <Search size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                                 <input

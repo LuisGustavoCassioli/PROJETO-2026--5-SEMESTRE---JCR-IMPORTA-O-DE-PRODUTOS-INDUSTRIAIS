@@ -109,4 +109,6 @@
 @media (max-width: 768px) {
   .nav-links,.navbar-cta { display: none; }
   .menu-toggle { display: flex; }
+  .navbar-inner { height: 60px; gap: 1rem; }
+  .navbar-logo-img { height: 40px; }
 }

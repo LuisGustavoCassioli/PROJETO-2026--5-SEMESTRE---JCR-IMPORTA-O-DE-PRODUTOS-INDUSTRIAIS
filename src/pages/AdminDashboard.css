@@ -41,3 +41,11 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+/* Mobile Admin Fixes */
+@media (max-width: 768px) {
+    .container { padding: 0 1rem; }
+    .btn { padding: 0.6rem 1rem; font-size: 0.8rem; }
+    table { display: block; overflow-x: auto; white-space: nowrap; }
+    h2 { font-size: 1.5rem; }
+}

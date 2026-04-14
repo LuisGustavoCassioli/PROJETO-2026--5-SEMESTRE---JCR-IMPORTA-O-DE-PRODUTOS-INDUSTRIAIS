@@ -55,12 +55,44 @@
 .filter-btn.cat-temperatura.active { border-left: 4px solid var(--red); color: var(--red); background: rgba(196,21,32,0.05); } /* Red */
 .filter-btn.cat-acessorios.active { border-left: 4px solid #3d5166; color: #3d5166; background: rgba(61,81,102,0.05); }
 
+/* ── Mobile Categories (Hidden by default) ── */
+.mobile-categories {
+  display: none;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.2rem 1.25rem;
+  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+  -ms-overflow-style: none;
+}
+.mobile-categories::-webkit-scrollbar { display: none; }
+
+.mobile-cat-btn {
+  white-space: nowrap;
+  padding: 0.6rem 1.2rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.mobile-cat-btn.active {
+  color: white!important;
+}
+.mobile-cat-btn.cat-todos.active { background: var(--navy); border-color: var(--navy); }
+.mobile-cat-btn.cat-pressao.active { background: #3b82f6; border-color: #3b82f6; }
+.mobile-cat-btn.cat-vacuo.active { background: #10b981; border-color: #10b981; }
+.mobile-cat-btn.cat-temperatura.active { background: var(--red); border-color: var(--red); }
+.mobile-cat-btn.cat-acessorios.active { background: #3d5166; border-color: #3d5166; }
+
 /* ── Results & Search ── */
 .results-header {
   margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .search-container {
@@ -431,8 +463,9 @@
 }
 
 @media (max-width: 1024px) {
-  .products-layout { grid-template-columns: 1fr; }
+  .products-layout { grid-template-columns: 1fr; gap: 1.5rem; }
   .filters-sidebar { display: none; }
+  .mobile-categories { display: flex; }
 }
 
 @media (max-width: 768px) {

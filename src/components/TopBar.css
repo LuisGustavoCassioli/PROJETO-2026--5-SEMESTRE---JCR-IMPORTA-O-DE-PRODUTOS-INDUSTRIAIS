@@ -25,6 +25,19 @@
   color: #86efac;
   font-weight: 600;
 }
-.topbar-whatsapp:hover { color: #4ade80; }
+.topbar-whatsapp:hover { opacity: 0.9; }
+
+@media (max-width: 768px) {
+  .topbar-item span { display: none; }
+  .topbar-inner { 
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  .topbar-whatsapp { font-size: 0.7rem; }
+}
+
+@media (max-width: 480px) {
+  .topbar-item:nth-child(2) { display: none; } /* Hide email on very small screens */
+}
 
 @media (max-width: 640px) { .topbar-whatsapp { margin-left: 0; } }

@@ -314,9 +314,15 @@
 }
 
 @media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; max-height: none; }
-  .hero-right { display: none; }
-  .hero-left { padding: 3rem 1.5rem; }
+  .hero { grid-template-columns: 1fr; max-height: none; min-height: auto; }
+  .hero-right { 
+    display: block; 
+    height: 300px;
+    margin-left: 0;
+    clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+  }
+  .hero-left { padding: 4rem 1.5rem 3rem; }
+  .hero-left h1 { font-size: 2.4rem; }
 }
 
 @media (max-width: 640px) {
