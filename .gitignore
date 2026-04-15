@@ -28,3 +28,6 @@ Thumbs.db
 .env
 .env.backup
 .env.production
+
+# Internal docs (not for GitHub)
+INSTRUCOES.md
