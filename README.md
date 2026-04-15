@@ -7,7 +7,7 @@
 ## � Links de Avaliação
 
 | Recurso | Link |
-|---|---|
+| --- | --- |
 | 🌐 **Sistema em Produção** | [jcr-importacao-de-produtos-industriais.vercel.app](https://jcr-importacao-de-produtos-industriais.vercel.app) |
 | 📹 **Vídeo de Apresentação** | [INSERIR LINK DO YOUTUBE AQUI] ← **PENDENTE** |
 | 📂 **Repositório GitHub** | [LuisGustavoCassioli/PROJETO-2026...](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS) |
@@ -24,7 +24,7 @@ A **JCR Importação de Produtos Industriais** operava com um site estático leg
 ## 👥 Squad JCR (Grupo 6)
 
 | Nome | RA |
-|---|---|
+| --- | --- |
 | Eduardo de Castro Freitas | 3024105801 |
 | Carlos Henrique Gomes Santos | 3026106005 |
 | **Luis Gustavo Cassioli Rodrigues** *(Líder)* | 3023204201 |
@@ -37,7 +37,7 @@ A **JCR Importação de Produtos Industriais** operava com um site estático leg
 ## 🏗️ Stack Tecnológica
 
 | Camada | Tecnologia |
-|---|---|
+| --- | --- |
 | **Frontend** | React 18 + TypeScript + Vite |
 | **Backend (BaaS)** | Supabase (PostgreSQL + Auth + Storage) |
 | **Hospedagem** | Vercel (CI/CD automático via GitHub) |
@@ -98,7 +98,7 @@ npm run build
 
 ## � Estrutura do Repositório
 
-```
+```bash
 /src
   /components   → Navbar, Footer, TopBar, ContactForm
   /pages        → HomePage, ProdutosPage, SobreNosPage, AdminDashboard, LoginPage
@@ -109,4 +109,4 @@ npm run build
 
 ---
 
-*Squad JCR — UNINOVE 2026*
+## Squad JCR — UNINOVE 2026
