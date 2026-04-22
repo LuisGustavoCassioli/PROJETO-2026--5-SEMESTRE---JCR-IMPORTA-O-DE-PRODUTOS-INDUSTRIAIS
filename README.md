@@ -9,7 +9,7 @@
 | Recurso | Link |
 | --- | --- |
 | 🌐 **Sistema em Produção** | [jcr-importacao-de-produtos-industriais.vercel.app](https://jcr-importacao-de-produtos-industriais.vercel.app) |
-| 📹 **Vídeo de Apresentação** | [INSERIR LINK DO YOUTUBE AQUI] ← **PENDENTE** |
+| 📹 **Vídeo de Apresentação** | [Assistir no YouTube](https://youtu.be/_B5MDMZN5bc) |
 | 📂 **Repositório GitHub** | [LuisGustavoCassioli/PROJETO-2026...](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS) |
 | 📄 **Documentação Acadêmica** | [DOCUMENTAÇÃO PROJETO JCR.pdf](./public/DOCUMENTA%C3%87%C3%83O%20PROJETO%20JCR.pdf) |
 
