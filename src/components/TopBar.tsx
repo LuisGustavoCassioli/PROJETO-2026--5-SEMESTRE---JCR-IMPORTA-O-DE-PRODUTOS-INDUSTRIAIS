@@ -5,7 +5,7 @@ export default function TopBar() {
     return (
         <div className="topbar">
             <div className="container topbar-inner">
-                <a href="tel:+551120841083" className="topbar-item">
+                <a href="tel:+551120841083" className="topbar-item" aria-label="Ligar para JCR pelo telefone 11 2084-1083">
                     <Phone size={13} />
                     <span>(11) 2084-1083</span>
                 </a>

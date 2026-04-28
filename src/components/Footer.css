@@ -50,7 +50,7 @@
 .footer-brand p {
   font-size: 0.875rem;
   line-height: 1.7;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.75);
 }
 
 .footer-contact-inline {
@@ -64,19 +64,19 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.82rem;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.75);
   transition: color 0.2s;
 }
 .footer-contact-inline a:hover { color: #fff; }
 
 /* ── Columns ── */
 .footer-title {
-  font-family: 'Oswald', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.75);
   margin-bottom: 1.1rem;
   margin-top: 0;
 }
@@ -85,7 +85,7 @@
 
 .footer-col ul li a {
   font-size: 0.875rem;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.75);
   transition: color 0.2s;
 }
 .footer-col ul li a:hover { color: #fff; }
@@ -102,7 +102,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.75);
 }
 
 .footer-address-inner svg { color: var(--red-light); flex-shrink: 0; }
@@ -117,7 +117,7 @@
 
 .footer-bottom p {
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.6);
 }
 
 /* ── Floating WhatsApp ── */

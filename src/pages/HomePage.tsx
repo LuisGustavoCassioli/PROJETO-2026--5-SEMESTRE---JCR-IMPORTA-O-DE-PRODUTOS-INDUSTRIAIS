@@ -135,7 +135,7 @@ export default function HomePage() {
                     <div className="hero-diagonal" />
                     <div className="hero-image-collage">
                         <div className="hero-img-main">
-                            <img src="/hero_industrial.webp" alt="Industrial instrumentation gauges" width="800" height="600" />
+                            <img src="/hero_industrial.webp" alt="Industrial instrumentation gauges" width="800" height="600" fetchPriority="high" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                     </div>
                 </div>
