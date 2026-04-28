@@ -153,12 +153,12 @@ ul, ol { list-style: none; }
 }
 
 .btn-whatsapp {
-  background: #128c7e;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(18,140,126,0.3);
+  background: #15803d;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(21,128,61,0.3);
 }
 .btn-whatsapp:hover {
-  background: #075e54;
+  background: #166534;
   transform: translateY(-2px);
   box-shadow: var(--shadow);
 }
