@@ -135,7 +135,7 @@ export default function HomePage() {
                     <div className="hero-diagonal" />
                     <div className="hero-image-collage">
                         <div className="hero-img-main">
-                            <img src="/hero_industrial.png" alt="Industrial instrumentation gauges" />
+                            <img src="/hero_industrial.webp" alt="Industrial instrumentation gauges" width="800" height="600" />
                         </div>
                     </div>
                 </div>

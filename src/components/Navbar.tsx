@@ -27,7 +27,7 @@ export default function Navbar() {
             <div className="container navbar-inner">
                 {/* Logo */}
                 <Link to="/" className="logo">
-                    <img src="/logo.png" alt="JCR Importação de Produtos Industriais" className="navbar-logo-img" />
+                    <img src="/logo-sm.webp" alt="JCR Importação de Produtos Industriais" className="navbar-logo-img" width="115" height="80" />
                 </Link>
 
                 {/* Desktop links */}
@@ -51,7 +51,7 @@ export default function Navbar() {
                 </a>
 
                 {/* Mobile toggle */}
-                <button className="menu-toggle" onClick={() => setOpen(!open)}>
+                <button className="menu-toggle" onClick={() => setOpen(!open)} aria-label="Abrir menu de navegação">
                     {open ? <X size={22} /> : <Menu size={22} />}
                 </button>
             </div>

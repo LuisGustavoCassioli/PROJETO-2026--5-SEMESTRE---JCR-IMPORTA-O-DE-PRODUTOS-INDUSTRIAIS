@@ -12,7 +12,7 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="footer-brand">
                         <div className="footer-logo">
-                            <img src="/logo.png" alt="JCR Importação de Produtos Industriais" className="footer-logo-img" />
+                            <img src="/logo-sm.webp" alt="JCR Importação de Produtos Industriais" className="footer-logo-img" width="115" height="80" />
                         </div>
                         <p>Mais de 15 anos de experiência em instrumentação industrial. Qualidade, pontualidade e atendimento diferenciado.</p>
                         <div className="footer-contact-inline">
@@ -23,7 +23,7 @@ export default function Footer() {
 
                     {/* Produtos */}
                     <div className="footer-col">
-                        <h6>Linhas de Produtos</h6>
+                        <h3 className="footer-title">Linhas de Produtos</h3>
                         <ul>
                             {['Pressão', 'Vácuo', 'Temperatura', 'Acessórios'].map(p => (
                                 <li key={p}><Link to="/produtos">{p}</Link></li>
@@ -33,7 +33,7 @@ export default function Footer() {
 
                     {/* Empresa */}
                     <div className="footer-col">
-                        <h6>Empresa</h6>
+                        <h3 className="footer-title">Empresa</h3>
                         <ul>
                             <li><Link to="/sobre-nos">Sobre Nós</Link></li>
                             <li>
@@ -46,7 +46,7 @@ export default function Footer() {
 
                     {/* Legal */}
                     <div className="footer-col">
-                        <h6>Legal</h6>
+                        <h3 className="footer-title">Legal</h3>
                         <ul>
                             <li><Link to="/">Termos de Uso</Link></li>
                             <li><Link to="/">Política de Privacidade</Link></li>

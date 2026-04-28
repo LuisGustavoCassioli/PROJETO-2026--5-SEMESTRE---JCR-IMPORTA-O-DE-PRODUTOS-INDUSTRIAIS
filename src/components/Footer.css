@@ -70,7 +70,7 @@
 .footer-contact-inline a:hover { color: #fff; }
 
 /* ── Columns ── */
-.footer-col h6 {
+.footer-title {
   font-family: 'Oswald', sans-serif;
   font-size: 0.7rem;
   font-weight: 600;
@@ -78,6 +78,7 @@
   letter-spacing: 0.15em;
   color: rgba(255,255,255,0.45);
   margin-bottom: 1.1rem;
+  margin-top: 0;
 }
 
 .footer-col ul { display: flex; flex-direction: column; gap: 0.55rem; }
@@ -127,17 +128,22 @@
   z-index: 200;
   width: 54px;
   height: 54px;
-  background: #25d366;
+  background: #128c7e;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  box-shadow: 0 4px 20px rgba(37,211,102,0.45);
-  animation: pulse-green 2.5s infinite;
-  transition: transform 0.2s;
+  animation: pulse-scale 2.5s infinite;
+  transition: transform 0.2s, opacity 0.2s;
 }
 .whatsapp-float:hover { transform: scale(1.08); }
+
+@keyframes pulse-scale {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
 @media (max-width: 1024px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }

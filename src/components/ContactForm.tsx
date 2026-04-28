@@ -55,8 +55,9 @@ export default function ContactForm() {
 
             <div className="form-grid">
                 <div className="form-group">
-                    <label>Nome Completo *</label>
+                    <label htmlFor="name">Nome Completo *</label>
                     <input
+                        id="name"
                         type="text"
                         required
                         className="form-input"
@@ -65,8 +66,9 @@ export default function ContactForm() {
                     />
                 </div>
                 <div className="form-group">
-                    <label>E-mail Corporativo *</label>
+                    <label htmlFor="email">E-mail Corporativo *</label>
                     <input
+                        id="email"
                         type="email"
                         required
                         className="form-input"
@@ -75,8 +77,9 @@ export default function ContactForm() {
                     />
                 </div>
                 <div className="form-group">
-                    <label>Telefone / WhatsApp</label>
+                    <label htmlFor="phone">Telefone / WhatsApp</label>
                     <input
+                        id="phone"
                         type="text"
                         className="form-input"
                         value={formData.phone}
@@ -84,8 +87,9 @@ export default function ContactForm() {
                     />
                 </div>
                 <div className="form-group">
-                    <label>Empresa</label>
+                    <label htmlFor="company">Empresa</label>
                     <input
+                        id="company"
                         type="text"
                         className="form-input"
                         value={formData.company}
@@ -95,8 +99,9 @@ export default function ContactForm() {
             </div>
 
             <div className="form-group" style={{ marginTop: '1rem' }}>
-                <label>Mensagem / Itens de Interesse</label>
+                <label htmlFor="message">Mensagem / Itens de Interesse</label>
                 <textarea
+                    id="message"
                     className="form-input"
                     rows={4}
                     value={formData.message}
