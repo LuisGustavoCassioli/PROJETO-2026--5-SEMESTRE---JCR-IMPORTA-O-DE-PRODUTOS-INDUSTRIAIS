@@ -27,7 +27,7 @@ export default function Navbar() {
             <div className="container navbar-inner">
                 {/* Logo */}
                 <Link to="/" className="logo">
-                    <img src="/logo-sm.webp" alt="JCR Importação de Produtos Industriais" className="navbar-logo-img" width="115" height="80" />
+                    <img src="/logo-sm.webp" srcSet="/logo-sm.webp 1x, /logo-sm@2x.webp 2x" alt="JCR Importação de Produtos Industriais" className="navbar-logo-img" width="115" height="80" />
                 </Link>
 
                 {/* Desktop links */}

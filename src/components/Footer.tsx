@@ -12,7 +12,7 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="footer-brand">
                         <div className="footer-logo">
-                            <img src="/logo-sm.webp" alt="JCR Importação de Produtos Industriais" className="footer-logo-img" width="115" height="80" />
+                            <img src="/logo-sm.webp" srcSet="/logo-sm.webp 1x, /logo-sm@2x.webp 2x" alt="JCR Importação de Produtos Industriais" className="footer-logo-img" width="115" height="80" />
                         </div>
                         <p>Mais de 15 anos de experiência em instrumentação industrial. Qualidade, pontualidade e atendimento diferenciado.</p>
                         <div className="footer-contact-inline">
