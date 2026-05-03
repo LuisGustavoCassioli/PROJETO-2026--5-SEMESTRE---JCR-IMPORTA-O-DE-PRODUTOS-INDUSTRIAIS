@@ -4,14 +4,14 @@
 
 ---
 
-## � Links de Avaliação
+## 🔗 Links de Avaliação
 
 | Recurso | Link |
-| --- | --- |
-| 🌐 **Sistema em Produção** | [jcr-importacao-de-produtos-industriais.vercel.app](https://jcr-importacao-de-produtos-industriais.vercel.app) |
+| :--- | :--- |
+| 🌐 **Sistema em Produção** | [jcr-industrial.vercel.app](https://projeto-2026-5-semestre-jcr-importa.vercel.app/) |
 | 📹 **Vídeo de Apresentação** | [Assistir no YouTube](https://youtu.be/_B5MDMZN5bc) |
-| 📂 **Repositório GitHub** | [LuisGustavoCassioli/PROJETO-2026...](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS) |
-| 📄 **Documentação Acadêmica** | [DOCUMENTAÇÃO PROJETO JCR.pdf](./public/DOCUMENTO PROJETO FINAL - JCR.pdf) |
+| 📂 **Repositório GitHub** | [LuisGustavoCassioli/PROJETO-2026](https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS) |
+| 📄 **Documentação Acadêmica** | [Baixar PDF (Docs JCR)](./public/DOCUMENTO%20PROJETO%20FINAL%20-%20JCR.pdf) |
 
 ---
 
@@ -96,7 +96,7 @@ npm run build
 
 ---
 
-## � Estrutura do Repositório
+## 📂 Estrutura do Repositório
 
 ```bash
 /src
