@@ -11,7 +11,7 @@
 | 🌐 **Sistema em Produção**    | https://projeto-2026-5-semestre-jcr-importa.vercel.app/                                                 |
 | 📹 **Vídeo de Apresentação**  | https://youtu.be/_B5MDMZN5bc                                                                            |
 | 📂 **Repositório GitHub**     | https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS |
-| 📄 **Documentação Acadêmica** | ./public/DOCUMENTO%20PROJETO%20FINAL%20-%20JCR.pdf                                                      |
+| 📄 **Documentação Acadêmica** | /public/DOCUMENTO%20PROJETO%20FINAL%20-%20JCR.pdf                                                      |
 
 ---
 
