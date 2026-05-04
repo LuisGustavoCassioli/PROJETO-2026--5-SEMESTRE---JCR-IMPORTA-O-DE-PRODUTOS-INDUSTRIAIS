@@ -48,10 +48,11 @@ A **JCR Importação de Produtos Industriais** operava com um site estático leg
 ## 📸 Demonstração do Sistema
 
 ### 🏠 Home Page (Hero & Institucional)
-![Home Page](./public/screenshots/home.png)
+![Home Page](public/screenshots/home.png)
+
 
 ### 📦 Catálogo de Produtos (Filtros e Busca)
-![Catálogo de Produtos](./public/screenshots/catalog.png)
+![Catálogo de Produtos](public/screenshots/catalog.png)
 
 ---
 
