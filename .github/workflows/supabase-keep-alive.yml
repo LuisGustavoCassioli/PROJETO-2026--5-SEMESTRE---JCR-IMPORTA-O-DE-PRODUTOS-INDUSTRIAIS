@@ -2,44 +2,35 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # Roda todo dia às 12:00 UTC
+    # Roda todo dia às 12:00 UTC (09h horário de Brasília)
     - cron: '0 12 * * *'
-  workflow_dispatch: # Disparo manual para testar agora
+  workflow_dispatch: # Disparo manual para testar
 
 jobs:
   ping:
     name: Ping Supabase API
     runs-on: ubuntu-latest
     steps:
-      - name: Validar secrets obrigatórios
+      - name: Validar secret obrigatório
         run: |
           if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
             echo "❌ ERRO: Secret SUPABASE_URL não configurado no GitHub!"
             exit 1
           fi
-          if [ -z "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
-            echo "❌ ERRO: Secret SUPABASE_ANON_KEY não configurado no GitHub!"
-            exit 1
-          fi
-          echo "✅ Secrets encontrados. Iniciando ping..."
+          echo "✅ Secret encontrado. Iniciando ping..."
 
-      - name: Ping Supabase REST API
+      - name: Ping Supabase Health Endpoint
         run: |
+          # /health não requer autenticação — retorna 200 se o projeto está ativo
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             --max-time 15 \
-            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/")
 
           echo "📡 HTTP Status retornado: $HTTP_STATUS"
 
-          # Qualquer resposta HTTP (inclusive 401/403) prova que o servidor está ativo.
-          # Só falha se: status=0 (sem conexão) ou 5xx (erro de servidor/banco pausado).
+          # Status 0 = sem conexão = banco pausado ou URL errada
           if [ "$HTTP_STATUS" -eq 0 ]; then
-            echo "❌ FALHOU: Sem resposta do Supabase — banco pode estar pausado ou URL errada!"
-            exit 1
-          elif [ "$HTTP_STATUS" -ge 500 ]; then
-            echo "❌ FALHOU: Supabase retornou HTTP $HTTP_STATUS — erro interno no servidor!"
+            echo "❌ FALHOU: Sem resposta do Supabase — banco pode estar pausado!"
             exit 1
           fi
 
