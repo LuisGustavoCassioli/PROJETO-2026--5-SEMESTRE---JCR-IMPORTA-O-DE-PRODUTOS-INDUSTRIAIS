@@ -2,9 +2,8 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # Roda toda segunda e quinta às 00:00 UTC (formato cron)
-    # Isso garante atividade pelo menos a cada 3-4 dias
-    - cron: '0 0 * * 1,4'
+    # Roda todos os dias às 12:00 UTC — garante atividade diária
+    - cron: '0 12 * * *'
   workflow_dispatch: # Permite rodar manualmente para testar
 
 jobs:
@@ -12,8 +11,30 @@ jobs:
     name: Ping Supabase API
     runs-on: ubuntu-latest
     steps:
-      - name: Send request to Supabase
+      - name: Validar secrets obrigatórios
         run: |
-          curl -I -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
-          -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-          -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
+          if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
+            echo "ERRO: Secret SUPABASE_URL não configurado!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
+            echo "ERRO: Secret SUPABASE_ANON_KEY não configurado!"
+            exit 1
+          fi
+          echo "Secrets OK. Iniciando ping..."
+
+      - name: Ping Supabase REST API
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+
+          echo "HTTP Status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 400 ]; then
+            echo "ERRO: Supabase retornou HTTP $HTTP_STATUS"
+            exit 1
+          fi
+
+          echo "Supabase está ATIVO. Ping bem-sucedido às $(date -u)."
