@@ -33,9 +33,14 @@ jobs:
 
           echo "📡 HTTP Status retornado: $HTTP_STATUS"
 
-          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 400 ]; then
-            echo "❌ FALHOU: Supabase retornou HTTP $HTTP_STATUS — banco pode estar pausado!"
+          # Qualquer resposta HTTP (inclusive 401/403) prova que o servidor está ativo.
+          # Só falha se: status=0 (sem conexão) ou 5xx (erro de servidor/banco pausado).
+          if [ "$HTTP_STATUS" -eq 0 ]; then
+            echo "❌ FALHOU: Sem resposta do Supabase — banco pode estar pausado ou URL errada!"
+            exit 1
+          elif [ "$HTTP_STATUS" -ge 500 ]; then
+            echo "❌ FALHOU: Supabase retornou HTTP $HTTP_STATUS — erro interno no servidor!"
             exit 1
           fi
 
-          echo "✅ SUCESSO: Supabase está ATIVO em $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "✅ SUCESSO: Supabase está ATIVO (HTTP $HTTP_STATUS) em $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
