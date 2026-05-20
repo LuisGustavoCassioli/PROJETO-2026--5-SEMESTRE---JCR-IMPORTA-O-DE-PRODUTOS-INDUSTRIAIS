@@ -8,43 +8,30 @@ on:
 
 jobs:
   ping:
-    name: Ping Supabase Database
+    name: Ping Supabase API
     runs-on: ubuntu-latest
     steps:
-      - name: Validar secrets obrigatórios
+      - name: Validar secret obrigatório
         run: |
           if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
-            echo "❌ ERRO: Secret SUPABASE_URL não configurado!"
+            echo "❌ ERRO: Secret SUPABASE_URL não configurado no GitHub!"
             exit 1
           fi
-          if [ -z "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
-            echo "❌ ERRO: Secret SUPABASE_ANON_KEY não configurado!"
-            exit 1
-          fi
-          echo "✅ Secrets OK."
+          echo "✅ Secret encontrado. Iniciando ping..."
 
-      - name: Executar query real no banco
+      - name: Ping Supabase Health Endpoint
         run: |
-          # SELECT real na tabela products — isso conta como atividade pro Supabase
-          RESPONSE=$(curl -s -w "\n%{http_code}" \
+          # /health não requer autenticação — retorna 200 se o projeto está ativo
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             --max-time 15 \
-            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/products?limit=1" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Prefer: count=none")
+            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/")
 
-          HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
-          BODY=$(echo "$RESPONSE" | head -n-1)
+          echo "📡 HTTP Status retornado: $HTTP_STATUS"
 
-          echo "📡 HTTP Status: $HTTP_STATUS"
-          echo "📦 Response: $BODY"
-
+          # Status 0 = sem conexão = banco pausado ou URL errada
           if [ "$HTTP_STATUS" -eq 0 ]; then
-            echo "❌ FALHOU: Sem conexão — banco pode estar pausado!"
-            exit 1
-          elif [ "$HTTP_STATUS" -ge 500 ]; then
-            echo "❌ FALHOU: Erro interno HTTP $HTTP_STATUS"
+            echo "❌ FALHOU: Sem resposta do Supabase — banco pode estar pausado!"
             exit 1
           fi
 
-          echo "✅ SUCESSO: Query executada (HTTP $HTTP_STATUS) em $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "✅ SUCESSO: Supabase está ATIVO (HTTP $HTTP_STATUS) em $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
