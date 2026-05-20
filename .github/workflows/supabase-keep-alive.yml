@@ -13,12 +13,12 @@ jobs:
     steps:
       - name: Validar secrets obrigatórios
         run: |
-          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ]; then
-            echo "❌ ERRO: Secret VITE_SUPABASE_URL não configurado no GitHub!"
+          if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
+            echo "❌ ERRO: Secret SUPABASE_URL não configurado no GitHub!"
             exit 1
           fi
-          if [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
-            echo "❌ ERRO: Secret VITE_SUPABASE_ANON_KEY não configurado no GitHub!"
+          if [ -z "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
+            echo "❌ ERRO: Secret SUPABASE_ANON_KEY não configurado no GitHub!"
             exit 1
           fi
           echo "✅ Secrets encontrados. Iniciando ping..."
@@ -27,9 +27,9 @@ jobs:
         run: |
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             --max-time 15 \
-            -X GET "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/" \
-            -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}")
+            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
 
           echo "📡 HTTP Status retornado: $HTTP_STATUS"
 
