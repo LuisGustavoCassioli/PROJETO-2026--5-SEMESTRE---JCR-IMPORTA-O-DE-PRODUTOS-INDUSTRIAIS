@@ -12,6 +12,7 @@
 | 📹 **Vídeo de Apresentação**  | https://youtu.be/_B5MDMZN5bc                                                                            |
 | 📂 **Repositório GitHub**     | https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS |
 | 📄 **Documentação Acadêmica** | https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS/blob/main/public/DOCUMENTO%20PROJETO%20FINAL%20-%20JCR.pdf                                                      |
+| 🖼️ **Banner do Projeto**     | https://github.com/LuisGustavoCassioli/PROJETO-2026--5-SEMESTRE---JCR-IMPORTA-O-DE-PRODUTOS-INDUSTRIAIS/blob/main/public/banner%20(3).pdf                                                                              |
 
 ---
 
