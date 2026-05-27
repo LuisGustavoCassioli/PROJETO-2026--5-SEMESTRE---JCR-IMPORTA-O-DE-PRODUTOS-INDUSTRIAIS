@@ -26,7 +26,7 @@ A **JCR Importação de Produtos Industriais** operava com um site estático leg
 | Nome                                          | RA         |
 | --------------------------------------------- | ---------- |
 | Carlos Henrique Gomes Santos                  | 3026106005 |
-| Eduardo de Castro Freitas                     | 3024105801 |
+| Eduardo Freitas de Castro                     | 3024105801 |
 | Lucas Nunes                                   | 3026105890 |
 | **Luis Gustavo Cassioli Rodrigues** *(Líder)* | 3023204201 |
 | Paulo Nlandu Onde Mavuba                      | 3026106430 |
