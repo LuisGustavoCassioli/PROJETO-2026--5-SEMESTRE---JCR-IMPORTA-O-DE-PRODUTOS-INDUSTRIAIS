@@ -2,36 +2,27 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # Roda todo dia às 12:00 UTC (09h horário de Brasília)
-    - cron: '0 12 * * *'
-  workflow_dispatch: # Disparo manual para testar
+    - cron: '0 0 */6 * *'
+  workflow_dispatch:
 
 jobs:
-  ping:
-    name: Ping Supabase API
+  keepalive:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Validar secret obrigatório
+      - name: Install PostgreSQL Client
         run: |
-          if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
-            echo "❌ ERRO: Secret SUPABASE_URL não configurado no GitHub!"
-            exit 1
-          fi
-          echo "✅ Secret encontrado. Iniciando ping..."
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
 
-      - name: Ping Supabase Health Endpoint
+      - name: Execute Keep Alive Query
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          # /health não requer autenticação — retorna 200 se o projeto está ativo
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            --max-time 15 \
-            -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/")
-
-          echo "📡 HTTP Status retornado: $HTTP_STATUS"
-
-          # Status 0 = sem conexão = banco pausado ou URL errada
-          if [ "$HTTP_STATUS" -eq 0 ]; then
-            echo "❌ FALHOU: Sem resposta do Supabase — banco pode estar pausado!"
-            exit 1
-          fi
-
-          echo "✅ SUCESSO: Supabase está ATIVO (HTTP $HTTP_STATUS) em $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          psql "$DATABASE_URL" -c "
+          UPDATE projeto_ativo
+          SET ativo = CASE
+            WHEN ativo = 'sim' THEN 'nao'
+            ELSE 'sim'
+          END;
+          "
